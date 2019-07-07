@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace instarm
@@ -32,7 +30,7 @@ namespace instarm
             Error
         }
 
-        public void Execute(string []args)
+        public async Task Execute(string []args)
         {
             foreach (var item in args)
             {
@@ -50,7 +48,7 @@ namespace instarm
                 }
                 else
                 {
-                    RunCommand(command);
+                    await RunCommand(command);
                 }
             }
             else
@@ -60,7 +58,7 @@ namespace instarm
 
         }
 
-        async void RunCommand(Keys command)
+        async Task RunCommand(Keys command)
         {
             string message = "";
             switch (command)

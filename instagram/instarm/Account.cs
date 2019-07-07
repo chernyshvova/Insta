@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using InstagramApiSharp.API;
@@ -17,7 +14,7 @@ namespace instarm
     {
         private readonly IInstaApi InstaApi;
         private readonly UserSessionData userSession;
-        private ProxyData proxydata;
+        private ProxyData proxydata = new ProxyData(null, null,null,null);
         const string stateFile = @"\state.bin";
         private const string pathAccount = @"\accounts\";
         private const string pathImg = @"\images\";
@@ -50,7 +47,6 @@ namespace instarm
         public async Task SignIn()
         {
             var delay = RequestDelay.FromSeconds(2, 2);
-            // create new InstaApi instance using Builder
             var relatedPath = Environment.CurrentDirectory + pathAccount + userSession.UserName + stateFile;
             try
             {
@@ -60,19 +56,11 @@ namespace instarm
                     using (var fs = File.OpenRead(relatedPath))
                     {
                         InstaApi.LoadStateDataFromStream(fs);
-                        // in .net core or uwp apps don't use LoadStateDataFromStream
-                        // use this one:
-                        // _instaApi.LoadStateDataFromString(new StreamReader(fs).ReadToEnd());
-                        // you should pass json string as parameter to this function.
                     }
                 }
                 else
                 {
-                    //   Console.WriteLine("Creating directory");
-                    //   DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + pathAccount + userSession.UserName);
-                    //   dirInfo.Create();
                     RunChallenge();
-
                 }
             }
             catch (Exception e)
@@ -81,7 +69,6 @@ namespace instarm
             }
             if (!InstaApi.IsUserAuthenticated)
             {
-                // login
                 Console.WriteLine($"Logging in as {userSession.UserName}");
                 delay.Disable();
                 var logInResult = await InstaApi.LoginAsync();
@@ -92,17 +79,6 @@ namespace instarm
                     return;
                 }
             }
-       //     var state = InstaApi.GetStateDataAsStream();
-            // in .net core or uwp apps don't use GetStateDataAsStream.
-            // use this one:
-            // var state = _instaApi.GetStateDataAsString();
-            // this returns you session as json string.
-       //     using (var fileStream = File.Create(relatedPath))
-        //    {
-       //         state.Seek(0, SeekOrigin.Begin);
-       //         state.CopyTo(fileStream);
-       //     }
-            // get currently logged in user
             var currentUser = await InstaApi.GetCurrentUserAsync();
             Console.WriteLine(
                 $"Logged in: username - {currentUser.Value.UserName}, full name - {currentUser.Value.FullName}");
@@ -259,7 +235,6 @@ namespace instarm
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.CreateNoWindow = true;
                 p.Start();
-                System.Diagnostics.Process.Start("ChallengeRequire.exe");
             }
             Console.WriteLine("Press 1 if challenge is created");
             Console.WriteLine("Press 2 to exit");

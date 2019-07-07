@@ -2,9 +2,6 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace instarm
 {
@@ -15,10 +12,10 @@ namespace instarm
 
         private void Connect()
         {
-            string host = "localhost"; // Имя хоста mysql
-            string database = "instagram"; // Имя базы данных
-            string user = "root"; // Имя пользователя
-            string password = "Alpha12345"; // Пароль пользователя
+            string host = "localhost"; 
+            string database = "instagram";
+            string user = "root"; 
+            string password = "Alpha12345";
 
             string Connect = "Database=" + database + ";Datasource=" + host + ";User=" + user + ";Password=" + password;
             mysql_connection = new MySqlConnection(Connect);

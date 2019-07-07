@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using InstagramApiSharp.API;
-using InstagramApiSharp.API.Builder;
-using InstagramApiSharp.Classes;
-using InstagramApiSharp.Logger;
-using instarm.Database;
 
 namespace instarm
 {
@@ -21,7 +12,6 @@ namespace instarm
                 CommandLine cmd = new CommandLine();
                 cmd.WriteHelp();
             }
-            int aaaaa = 44;
             RunAsync(args);
             Console.ReadKey();
         }
@@ -41,7 +31,7 @@ namespace instarm
         public static async Task<bool> MainAsync(string[] args)
         {        
             CommandLine cmd = new CommandLine();
-            cmd.Execute(args);
+            await cmd.Execute(args);
             return false;
         }
     }
