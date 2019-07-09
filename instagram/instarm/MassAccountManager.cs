@@ -25,28 +25,9 @@ namespace instarm
         }
         public async Task SetPostSingle(string accountName, string imgName, string message)
         {
-            Profile profile = new Profile();
-            profile = dbhelper.GetProfileByName(accountName);
-            UserSessionData userSession = new UserSessionData
-            {
-                UserName = profile.name,
-                Password = profile.password
-            };
-
-            if (profile.proxyHost != null)
-            {
-                ProxyData data = new ProxyData(profile.proxyHost, profile.proxyPort, profile.proxyUsername, profile.proxyPassword);
-                Account account = new Account(userSession, proxyhandler.getProxy(data), data);
-                await account.SignIn();
-                await account.SetPost(imgName, message);
-            }
-            if (profile.proxyHost == null)
-            {
-                Account account = new Account(userSession);
-                await account.SignIn();
-                await account.SetPost(imgName, message);
-            }
-
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.SetPost(imgName, message);
         }
 
         public async Task LikeMediaByTag(string tag, string mediaUrl)
@@ -60,79 +41,63 @@ namespace instarm
         }
         public async Task LikeMediaSingle(string accountName, string mediaUrl)
         {
-            Profile profile = new Profile();
-            profile = dbhelper.GetProfileByName(accountName);
-            UserSessionData userSession = new UserSessionData
-            {
-                UserName = profile.name,
-                Password = profile.password
-            };
-
-            if (profile.proxyHost != null)
-            {
-                ProxyData data = new ProxyData(profile.proxyHost, profile.proxyPort, profile.proxyUsername, profile.proxyPassword);
-                Account account = new Account(userSession, proxyhandler.getProxy(data), data);
-                await account.SignIn();
-                await account.LikeMedia(mediaUrl);
-            }
-            if (profile.proxyHost == null)
-            {
-                Account account = new Account(userSession);
-                await account.SignIn();
-                await account.LikeMedia(mediaUrl);
-            }
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.LikeMedia(mediaUrl);         
         }
+
+        public async Task ExploreLikeHashtag(string accountName, string hashtag, string pages)
+        {
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.ExploreLikeHashtag(hashtag, int.Parse(pages));          
+        }
+        public async Task FollowUser(string accountName, string username) {
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.FollowUser(username);       
+        }
+        public async Task UnFollowUser(string accountName, string username)
+        {
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.UnFollowUser(username);
+        }
+
+
+        public async Task DirectCheckMessages(string accountName)
+        {
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.DirectCheckMessages();
+        }
+        public async Task DirectSendMessage(string accountName, string username, string message)
+        {
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.DirectSendMessage(username, message);
+        }
+
+        public async Task DirectAnswerMessage(string accountName, string username, string message)
+        {
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.DirectAnswerMessage(username, message);
+        }
+
 
         public async Task CommentMedia(string accountName, string mediaUrl, string message)
         {
-            Profile profile = new Profile();
-            profile = dbhelper.GetProfileByName(accountName);        
-            UserSessionData userSession = new UserSessionData
-                {
-                    UserName = profile.name,
-                    Password = profile.password
-                };
-
-            if (profile.proxyHost != null)
-            {
-                ProxyData data = new ProxyData(profile.proxyHost, profile.proxyPort, profile.proxyUsername, profile.proxyPassword);
-                Account account = new Account(userSession, proxyhandler.getProxy(data), data);
-                await account.SignIn();
-                await account.CommentMedia(mediaUrl, message);
-            }
-            if (profile.proxyHost == null)
-            {
-                Account account = new Account(userSession);
-                await account.SignIn();
-                await account.CommentMedia(mediaUrl, message);
-            }
-
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.CommentMedia(mediaUrl, message);
         }
 
         public async Task ChangeAvatar(string accountName, string imgName)
         {
-
-            Profile profile = new Profile();
-            profile = dbhelper.GetProfileByName(accountName);
-            UserSessionData userSession = new UserSessionData
-            {
-                UserName = profile.name,
-                Password = profile.password
-            };
-
-            if (profile.proxyHost != null)
-            {
-                ProxyData data = new ProxyData(profile.proxyHost, profile.proxyPort, profile.proxyUsername, profile.proxyPassword);
-                Account account = new Account(userSession, proxyhandler.getProxy(data), data);
-                await account.SignIn();
-                await account.ChangeAvatar(imgName);
-            }
-            if (profile.proxyHost == null)
-            {
-                Account account = new Account(userSession);
-                await account.SignIn();
-                await account.ChangeAvatar(imgName);
-            }
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.ChangeAvatar(imgName);     
         }
 
         private void SetAccounts(string tag)
@@ -161,6 +126,28 @@ namespace instarm
             }
         }
 
+        private Account getAccount(string accountName)
+        {
+            Profile profile = new Profile();
+            profile = dbhelper.GetProfileByName(accountName);
+            UserSessionData userSession = new UserSessionData
+            {
+                UserName = profile.name,
+                Password = profile.password
+            };
+            if (profile.proxyHost != null)
+            {
+                ProxyData data = new ProxyData(profile.proxyHost, profile.proxyPort, profile.proxyUsername, profile.proxyPassword);
+                Account account = new Account(userSession, proxyhandler.getProxy(data), data);
+                return account;
+            }
+            else
+            {
+                Account account = new Account(userSession);
+                return account;
+            }
+
+        }
 
         private void Clear()
         {

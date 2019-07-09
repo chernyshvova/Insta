@@ -7,6 +7,8 @@ using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Logger;
 using System.Net.Http;
+using InstagramApiSharp;
+using System.Linq;
 
 namespace instarm
 {
@@ -66,6 +68,7 @@ namespace instarm
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                throw;
             }
             if (!InstaApi.IsUserAuthenticated)
             {
@@ -134,6 +137,7 @@ namespace instarm
             }
 
         }
+
         private async Task<string> media(string mediaUrl) {
             var mediaId = await InstaApi.MediaProcessor.GetMediaIdFromUrlAsync(new Uri(mediaUrl));
             if (!mediaId.Succeeded)
@@ -212,6 +216,122 @@ namespace instarm
                 ? $"Liked!: {likeResponse.Value}"
                 : $"Error.Something goes wrong: {likeResponse.Info}");
         }
+        
+        public async Task FollowUser(string username)
+        {
+            var userInfo = await InstaApi.UserProcessor.GetUserInfoByUsernameAsync(username);
+            if (userInfo.Succeeded)
+            {
+                var followUser = await InstaApi.UserProcessor.FollowUserAsync(userInfo.Value.Pk);
+                Console.WriteLine(followUser.Succeeded
+              ? $"Folloved!: {userInfo.Value.Username}"
+              : $"Error.Something goes wrong: {followUser.Info}");
+            }
+        }
+        public async Task UnFollowUser(string username)
+        {
+            var userInfo = await InstaApi.UserProcessor.GetUserInfoByUsernameAsync(username);
+            if (userInfo.Succeeded)
+            {
+                var followUser = await InstaApi.UserProcessor.UnFollowUserAsync(userInfo.Value.Pk);
+                Console.WriteLine(followUser.Succeeded
+                ? $"Unfolloved: {userInfo.Value.Username}"
+:                $"Error.Something goes wrong: {followUser.Info}");
+            }
+        }
+
+        public async Task GetSelfFollowers (int pages)
+        {
+            var userFollovers = await InstaApi.UserProcessor.GetCurrentUserFollowersAsync(PaginationParameters.MaxPagesToLoad(pages));
+        }
+        public async Task GetuserFollowers(string username, int pages)
+        {
+                var follovers = await InstaApi.UserProcessor.GetUserFollowersAsync("argylefreeman", PaginationParameters.MaxPagesToLoad(pages));
+        }
+
+        public async Task ExploreLikeHashtag(string hashtag, int pages)
+        {
+            int counter = 0;
+            var tagFeed = await InstaApi.FeedProcessor.GetTagFeedAsync(hashtag, PaginationParameters.MaxPagesToLoad(pages));
+            if (tagFeed.Succeeded)
+            {
+                foreach (var media in tagFeed.Value.Medias)
+                {
+                    Console.WriteLine(media.Pk);
+                    Console.WriteLine(media.Code);
+                    Console.WriteLine(media.LikesCount);
+                    Console.WriteLine(media.User);
+                    Console.WriteLine("===================");
+                    var likeResult = await InstaApi.MediaProcessor.LikeMediaAsync(media.InstaIdentifier);
+                    var resultString = likeResult.Value ? "liked" : "not liked";
+                    if (likeResult.Value)
+                    {
+                        counter++;
+                    }
+                    Console.WriteLine($"Media {media.Code} {resultString}");
+                }
+                Console.WriteLine("Liked: " + counter + " medias");
+            }
+        }
+
+        public async Task DirectCheckMessages()
+        {
+            var inbox = await InstaApi.MessagingProcessor.GetDirectInboxAsync(PaginationParameters.MaxPagesToLoad(1));
+            if (inbox.Value.Inbox.UnseenCount!=0)
+            {
+                Console.WriteLine("Unreaded messages: " + inbox.Value.Inbox.UnseenCount);
+                foreach (var thread in inbox.Value.Inbox.Threads)
+                {
+                    if (thread.HasUnreadMessage)
+                    {
+                        var threads = await InstaApi.MessagingProcessor.GetDirectInboxThreadAsync(thread.ThreadId, PaginationParameters.MaxPagesToLoad(1));
+                        foreach (var item in threads.Value.Items)
+                        {
+                            Console.WriteLine(item.Text);  //check here
+                            var mark = await InstaApi.MessagingProcessor.MarkDirectThreadAsSeenAsync(thread.ThreadId, item.ItemId);
+                        }                       
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("There are no unreaded messages");
+            }
+        }
+
+        public async Task DirectSendMessage(string username, string message)
+        {
+            try
+            {
+                var user = await InstaApi.UserProcessor.GetUserAsync(username);
+                var userId = user.Value.Pk.ToString();
+                var directText = await InstaApi.MessagingProcessor.SendDirectTextAsync(userId, null, message);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error while trying to send message!");
+                throw;
+            }
+        }
+
+        public async Task DirectAnswerMessage(string username, string message)
+        {
+            try
+            {
+                var inbox = await InstaApi.MessagingProcessor.GetDirectInboxAsync(PaginationParameters.MaxPagesToLoad(1));
+                var desireThread = inbox.Value.Inbox.Threads
+                    .Find(u => u.Users.FirstOrDefault().UserName.ToLower() == username);
+                var requestedThreadId = desireThread.ThreadId;
+                var directText = await InstaApi.MessagingProcessor.SendDirectTextAsync(null, requestedThreadId, message);
+
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error while trying to send message!");
+                throw;
+            }         
+        }
+
         private void RunChallenge()
         {
             Console.WriteLine("Starting chalange auth...");

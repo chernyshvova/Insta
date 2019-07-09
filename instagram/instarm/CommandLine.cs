@@ -8,7 +8,17 @@ namespace instarm
     {
         const string PostCmd = "-post";
         const string LikeCmd = "-like";
+        const string DirectCmd = "-direct";
 
+        const string Send = "--send";
+        const string Answer= "--answer";
+        const string Check = "--check";
+
+
+        const string FollowCmd = "-follow";
+        const string UnfollowCmd = "-unfollow";
+
+        const string LikeExploreCmd = "--mass";
         const string ByTag = "--tag";
         const string Single = "--single";
 
@@ -24,8 +34,14 @@ namespace instarm
             SetPostSingle,
             LikeMediaByTag,
             LikeMediaSingle,
+            LikeExplore,
+            Follow,
+            Unfollow,
             CommentMedia,
             ChangeAvatar,
+            DirectAnswer,
+            DirectSend,
+            DirectCheck,
             Help,
             Error
         }
@@ -93,6 +109,32 @@ namespace instarm
                 case Keys.ChangeAvatar:
                     await manager.ChangeAvatar(input[1], input[2]);
                     break;
+                case Keys.LikeExplore:
+                    await manager.ExploreLikeHashtag(input[2], input[3], input[4]);
+                    break;
+                case Keys.Follow:
+                    await manager.FollowUser(input[1], input[2]);
+                    break;
+                case Keys.Unfollow:
+                    await manager.UnFollowUser(input[1], input[2]);
+                    break;
+                case Keys.DirectSend:
+                    for (int i = 4; i != input.Count; i++)
+                    {
+                        message += input[i] + " ";
+                    }
+                    await manager.DirectSendMessage(input[2], input[3], message);
+                    break;
+                case Keys.DirectAnswer:
+                    for (int i = 4; i != input.Count; i++)
+                    {
+                        message += input[i] + " ";
+                    }
+                    await manager.DirectAnswerMessage(input[2], input[3], message);
+                    break;
+                case Keys.DirectCheck:
+                    await manager.DirectCheckMessages(input[2]);
+                    break;
                 default:
                     cmd.Error();
                     break;
@@ -158,6 +200,17 @@ namespace instarm
                         return Keys.Error;
                     }
                 }
+                if (input[1].Equals(LikeExploreCmd))
+                {
+                    if (input.Count == 5)
+                    {
+                        return Keys.LikeExplore;
+                    }
+                    else
+                    {
+                        return Keys.Error;
+                    }
+                }
                 else
                 {
                     return Keys.Error;
@@ -191,7 +244,69 @@ namespace instarm
             {
                 return Keys.Help;
             }
+            if (input[0].Equals(FollowCmd))
+            {
+                if (input.Count == 3)
+                {
+                    return Keys.Follow;
+                }
+                else
+                {
+                    return Keys.Error;
+                }
+            }
+            if (input[0].Equals(UnfollowCmd))
+            {
+                if (input.Count == 3)
+                {
+                    return Keys.Unfollow;
+                }
+                else
+                {
+                    return Keys.Error;
+                }
+            }
+            if (input[0].Equals(DirectCmd))
+            {
+                if (input[1].Equals(Send))
+                {
+                    if (input.Count >= 5)
+                    {
+                        return Keys.DirectSend;
+                    }
+                    else
+                    {
+                        return Keys.Error;
+                    }
+                }
+                if (input[1].Equals(Answer))
+                {
+                    if (input.Count >= 5)
+                    {
+                        return Keys.DirectAnswer;
+                    }
+                    else
+                    {
+                        return Keys.Error;
+                    }
+                }
+                if (input[1].Equals(Check))
+                {
+                    if (input.Count == 3)
+                    {
+                        return Keys.DirectCheck;
+                    }
+                    else
+                    {
+                        return Keys.Error;
+                    }
+                }
+                else
+                {
+                    return Keys.Error;
+                }
 
+            }
             else
             {
                 return Keys.Error;
@@ -213,8 +328,15 @@ namespace instarm
             Console.WriteLine("-post --single username imagename.jpg message \t \t to post image by single user");
             Console.WriteLine("-like --tag dbtag mediaUrl \t \t \t \t to like image by tag");
             Console.WriteLine("-like --single username mediaUrl \t \t \t to like image by single user");
+            Console.WriteLine("-like --mass username hashtag pages(int) \t \t to like world images by hashtag");
             Console.WriteLine("-comment username mediaUrl message \t \t \t to comment image");
             Console.WriteLine("-avatar username image.jpg \t \t \t \t to change profile avatar");
+            Console.WriteLine("-follow username targetUsername \t \t \t to follow target by user");
+            Console.WriteLine("-unfollow username targetUsername \t \t \t to unfollow target by user");
+
+            Console.WriteLine("-direct --send username targetUsername message \t \t to send message to target from user");
+            Console.WriteLine("-direct --answer username targetUsername message \t to send answer message to target from user (don't use if thread NOT exist)");
+            Console.WriteLine("-direct --check username \t \t \t \t to check new incoming messages");
             Console.WriteLine("--=COMMANDS==--");
         }
 
