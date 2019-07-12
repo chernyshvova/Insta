@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/instarm/DesignTimeBuild
+/.vs/instarm/v16
+/instarm/bin/Debug
+/instarm/obj/Debug
+/packages

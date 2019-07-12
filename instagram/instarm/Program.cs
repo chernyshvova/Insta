@@ -12,10 +12,6 @@ namespace instarm
                 CommandLine cmd = new CommandLine();
                 cmd.WriteHelp();
             }
-<<<<<<< HEAD
-            int aaaaa = 44;//todo remove
-=======
->>>>>>> 30d2ebe7b1535795e94c0edf919b75876893233a
             RunAsync(args);
             Console.ReadKey();
         }
