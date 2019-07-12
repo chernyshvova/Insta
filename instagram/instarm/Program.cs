@@ -21,7 +21,7 @@ namespace instarm
                 CommandLine cmd = new CommandLine();
                 cmd.WriteHelp();
             }
-            int aaaaa = 44;
+            int aaaaa = 44;//todo remove
             RunAsync(args);
             Console.ReadKey();
         }
