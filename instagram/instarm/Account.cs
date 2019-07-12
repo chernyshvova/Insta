@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using InstagramApiSharp.API;
@@ -10,6 +7,8 @@ using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Logger;
 using System.Net.Http;
+using InstagramApiSharp;
+using System.Linq;
 
 namespace instarm
 {
@@ -17,7 +16,7 @@ namespace instarm
     {
         private readonly IInstaApi InstaApi;
         private readonly UserSessionData userSession;
-        private ProxyData proxydata;
+        private ProxyData proxydata = new ProxyData(null, null,null,null);
         const string stateFile = @"\state.bin";
         private const string pathAccount = @"\accounts\";
         private const string pathImg = @"\images\";
@@ -50,7 +49,6 @@ namespace instarm
         public async Task SignIn()
         {
             var delay = RequestDelay.FromSeconds(2, 2);
-            // create new InstaApi instance using Builder
             var relatedPath = Environment.CurrentDirectory + pathAccount + userSession.UserName + stateFile;
             try
             {
@@ -60,28 +58,20 @@ namespace instarm
                     using (var fs = File.OpenRead(relatedPath))
                     {
                         InstaApi.LoadStateDataFromStream(fs);
-                        // in .net core or uwp apps don't use LoadStateDataFromStream
-                        // use this one:
-                        // _instaApi.LoadStateDataFromString(new StreamReader(fs).ReadToEnd());
-                        // you should pass json string as parameter to this function.
                     }
                 }
                 else
                 {
-                    //   Console.WriteLine("Creating directory");
-                    //   DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + pathAccount + userSession.UserName);
-                    //   dirInfo.Create();
                     RunChallenge();
-
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                throw;
             }
             if (!InstaApi.IsUserAuthenticated)
             {
-                // login
                 Console.WriteLine($"Logging in as {userSession.UserName}");
                 delay.Disable();
                 var logInResult = await InstaApi.LoginAsync();
@@ -92,17 +82,6 @@ namespace instarm
                     return;
                 }
             }
-       //     var state = InstaApi.GetStateDataAsStream();
-            // in .net core or uwp apps don't use GetStateDataAsStream.
-            // use this one:
-            // var state = _instaApi.GetStateDataAsString();
-            // this returns you session as json string.
-       //     using (var fileStream = File.Create(relatedPath))
-        //    {
-       //         state.Seek(0, SeekOrigin.Begin);
-       //         state.CopyTo(fileStream);
-       //     }
-            // get currently logged in user
             var currentUser = await InstaApi.GetCurrentUserAsync();
             Console.WriteLine(
                 $"Logged in: username - {currentUser.Value.UserName}, full name - {currentUser.Value.FullName}");
@@ -158,6 +137,7 @@ namespace instarm
             }
 
         }
+
         private async Task<string> media(string mediaUrl) {
             var mediaId = await InstaApi.MediaProcessor.GetMediaIdFromUrlAsync(new Uri(mediaUrl));
             if (!mediaId.Succeeded)
@@ -236,6 +216,122 @@ namespace instarm
                 ? $"Liked!: {likeResponse.Value}"
                 : $"Error.Something goes wrong: {likeResponse.Info}");
         }
+        
+        public async Task FollowUser(string username)
+        {
+            var userInfo = await InstaApi.UserProcessor.GetUserInfoByUsernameAsync(username);
+            if (userInfo.Succeeded)
+            {
+                var followUser = await InstaApi.UserProcessor.FollowUserAsync(userInfo.Value.Pk);
+                Console.WriteLine(followUser.Succeeded
+              ? $"Folloved!: {userInfo.Value.Username}"
+              : $"Error.Something goes wrong: {followUser.Info}");
+            }
+        }
+        public async Task UnFollowUser(string username)
+        {
+            var userInfo = await InstaApi.UserProcessor.GetUserInfoByUsernameAsync(username);
+            if (userInfo.Succeeded)
+            {
+                var followUser = await InstaApi.UserProcessor.UnFollowUserAsync(userInfo.Value.Pk);
+                Console.WriteLine(followUser.Succeeded
+                ? $"Unfolloved: {userInfo.Value.Username}"
+:                $"Error.Something goes wrong: {followUser.Info}");
+            }
+        }
+
+        public async Task GetSelfFollowers (int pages)
+        {
+            var userFollovers = await InstaApi.UserProcessor.GetCurrentUserFollowersAsync(PaginationParameters.MaxPagesToLoad(pages));
+        }
+        public async Task GetuserFollowers(string username, int pages)
+        {
+                var follovers = await InstaApi.UserProcessor.GetUserFollowersAsync("argylefreeman", PaginationParameters.MaxPagesToLoad(pages));
+        }
+
+        public async Task ExploreLikeHashtag(string hashtag, int pages)
+        {
+            int counter = 0;
+            var tagFeed = await InstaApi.FeedProcessor.GetTagFeedAsync(hashtag, PaginationParameters.MaxPagesToLoad(pages));
+            if (tagFeed.Succeeded)
+            {
+                foreach (var media in tagFeed.Value.Medias)
+                {
+                    Console.WriteLine(media.Pk);
+                    Console.WriteLine(media.Code);
+                    Console.WriteLine(media.LikesCount);
+                    Console.WriteLine(media.User);
+                    Console.WriteLine("===================");
+                    var likeResult = await InstaApi.MediaProcessor.LikeMediaAsync(media.InstaIdentifier);
+                    var resultString = likeResult.Value ? "liked" : "not liked";
+                    if (likeResult.Value)
+                    {
+                        counter++;
+                    }
+                    Console.WriteLine($"Media {media.Code} {resultString}");
+                }
+                Console.WriteLine("Liked: " + counter + " medias");
+            }
+        }
+
+        public async Task DirectCheckMessages()
+        {
+            var inbox = await InstaApi.MessagingProcessor.GetDirectInboxAsync(PaginationParameters.MaxPagesToLoad(1));
+            if (inbox.Value.Inbox.UnseenCount!=0)
+            {
+                Console.WriteLine("Unreaded messages: " + inbox.Value.Inbox.UnseenCount);
+                foreach (var thread in inbox.Value.Inbox.Threads)
+                {
+                    if (thread.HasUnreadMessage)
+                    {
+                        var threads = await InstaApi.MessagingProcessor.GetDirectInboxThreadAsync(thread.ThreadId, PaginationParameters.MaxPagesToLoad(1));
+                        foreach (var item in threads.Value.Items)
+                        {
+                            Console.WriteLine(item.Text);  //check here
+                            var mark = await InstaApi.MessagingProcessor.MarkDirectThreadAsSeenAsync(thread.ThreadId, item.ItemId);
+                        }                       
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("There are no unreaded messages");
+            }
+        }
+
+        public async Task DirectSendMessage(string username, string message)
+        {
+            try
+            {
+                var user = await InstaApi.UserProcessor.GetUserAsync(username);
+                var userId = user.Value.Pk.ToString();
+                var directText = await InstaApi.MessagingProcessor.SendDirectTextAsync(userId, null, message);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error while trying to send message!");
+                throw;
+            }
+        }
+
+        public async Task DirectAnswerMessage(string username, string message)
+        {
+            try
+            {
+                var inbox = await InstaApi.MessagingProcessor.GetDirectInboxAsync(PaginationParameters.MaxPagesToLoad(1));
+                var desireThread = inbox.Value.Inbox.Threads
+                    .Find(u => u.Users.FirstOrDefault().UserName.ToLower() == username);
+                var requestedThreadId = desireThread.ThreadId;
+                var directText = await InstaApi.MessagingProcessor.SendDirectTextAsync(null, requestedThreadId, message);
+
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error while trying to send message!");
+                throw;
+            }         
+        }
+
         private void RunChallenge()
         {
             Console.WriteLine("Starting chalange auth...");
@@ -259,7 +355,6 @@ namespace instarm
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.CreateNoWindow = true;
                 p.Start();
-                System.Diagnostics.Process.Start("ChallengeRequire.exe");
             }
             Console.WriteLine("Press 1 if challenge is created");
             Console.WriteLine("Press 2 to exit");
