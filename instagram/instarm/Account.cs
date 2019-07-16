@@ -9,6 +9,8 @@ using InstagramApiSharp.Logger;
 using System.Net.Http;
 using InstagramApiSharp;
 using System.Linq;
+using InstagramApiSharp.Classes.SessionHandlers;
+using System.Text.RegularExpressions;
 
 namespace instarm
 {
@@ -21,6 +23,7 @@ namespace instarm
         private const string pathAccount = @"\accounts\";
         private const string pathImg = @"\images\";
         private const string pathAvatar = @"\avatars\";
+
         public Account(UserSessionData userSession)
         {
             this.userSession = userSession;
@@ -28,6 +31,7 @@ namespace instarm
             .SetUser(userSession)
             .UseLogger(new DebugLogger(LogLevel.All)) // use logger for requests and debug messages
             .SetRequestDelay(RequestDelay.FromSeconds(2, 2))  //отсрочка запросов
+            .SetSessionHandler(new FileSessionHandler() { FilePath = (Environment.CurrentDirectory + pathAccount + userSession.UserName + stateFile) })
             .Build();
         }
         public Account(UserSessionData userSession, HttpClientHandler proxy, ProxyData data)
@@ -37,7 +41,8 @@ namespace instarm
             InstaApi = InstaApiBuilder.CreateBuilder()
             .SetUser(userSession)
             .UseLogger(new DebugLogger(LogLevel.All))
-            .SetRequestDelay(RequestDelay.FromSeconds(2, 2)) 
+            .SetRequestDelay(RequestDelay.FromSeconds(2, 2))
+            .SetSessionHandler(new FileSessionHandler() { FilePath = (Environment.CurrentDirectory + pathAccount + userSession.UserName + stateFile) })
             .UseHttpClientHandler(proxy)
             .Build();
         }
@@ -62,7 +67,16 @@ namespace instarm
                 }
                 else
                 {
-                    RunChallenge();
+                    var currentUser = await InstaApi.LoginAsync();
+                    if (currentUser.Succeeded)
+                    {
+                        SaveSession();
+                    }
+                    else
+                    {
+                        await GetChallenge();
+                        SaveSession();
+                    }
                 }
             }
             catch (Exception e)
@@ -70,21 +84,25 @@ namespace instarm
                 Console.WriteLine(e);
                 throw;
             }
+            LoadSession();
             if (!InstaApi.IsUserAuthenticated)
             {
-                Console.WriteLine($"Logging in as {userSession.UserName}");
-                delay.Disable();
-                var logInResult = await InstaApi.LoginAsync();
-                delay.Enable();
-                if (!logInResult.Succeeded)
+                var currentUser = await InstaApi.LoginAsync();              
+                if (currentUser.Succeeded)
                 {
-                    Console.WriteLine($"Unable to login: {logInResult.Info.Message}");
-                    return;
+                    SaveSession();
                 }
+                else
+                {
+                    await GetChallenge();
+                    SaveSession();
+                    LoadSession();
+                }   
             }
-            var currentUser = await InstaApi.GetCurrentUserAsync();
-            Console.WriteLine(
-                $"Logged in: username - {currentUser.Value.UserName}, full name - {currentUser.Value.FullName}");
+            else
+            {
+                Console.WriteLine("Session loaded!");
+            }
         }
 
         /// <summary>
@@ -175,7 +193,7 @@ namespace instarm
                     X = 0.5,
                     Y = 0.5
                 }); */
-                var result = await InstaApi.MediaProcessor.UploadPhotoAsync(mediaImage, message);
+                    var result = await InstaApi.MediaProcessor.UploadPhotoAsync(mediaImage, message);
                 Console.WriteLine(result.Succeeded
                     ? $"Media created: {result.Value.Pk}, {result.Value.Caption}"
                     : $"Unable to upload photo: {result.Info.Message}");
@@ -366,6 +384,158 @@ namespace instarm
             {
                 Console.WriteLine("Error");
                 return;
+            }
+        }
+
+        private async Task GetChallenge()
+        {
+            var currentUser = await InstaApi.LoginAsync();
+            if (currentUser.Succeeded)
+            {
+                SaveSession();
+            }
+            else
+            {
+                if (currentUser.Value == InstaLoginResult.ChallengeRequired)
+                {
+                    var challenge = await InstaApi.GetChallengeRequireVerifyMethodAsync();
+                    if (challenge.Succeeded)
+                    {
+                        if (challenge.Value.SubmitPhoneRequired)
+                        {
+                            Console.WriteLine("Please type a valid phone number(with country code).\r\ni.e: +989123456789");
+                            string phoneNumber = Console.ReadLine();
+                            if (!phoneNumber.StartsWith("+"))
+                                phoneNumber = $"+{phoneNumber}";
+                            var submitPhone = await InstaApi.SubmitPhoneNumberForChallengeRequireAsync(phoneNumber);
+                            if (submitPhone.Succeeded)
+                            {
+                                try
+                                {
+                                    var phoneResult = await InstaApi.RequestVerifyCodeToSMSForChallengeRequireAsync();
+                                    if (phoneResult.Succeeded)
+                                    {
+                                        Console.WriteLine("We sent verify code to this phone number(it's end with this):\n" + phoneResult.Value.StepData.ContactPoint);
+                                        await VerifyData();
+                                    }
+                                    else
+                                        Console.WriteLine(phoneResult.Info.Message, "ERROR");
+                                }
+                                catch (Exception)
+                                {
+                                    Console.WriteLine("Error while trying get challenge from phone number");
+                                    throw;
+                                }
+                            }
+                            else
+                                Console.WriteLine("Error while trying get challenge from phone");
+                        }
+                        else
+                        {
+                            try
+                            {
+                                var email = await InstaApi.RequestVerifyCodeToEmailForChallengeRequireAsync();
+                                if (email.Succeeded)
+                                {
+                                    Console.WriteLine($"We sent verify code to this email:\n{email.Value.StepData.ContactPoint}");
+                                    await VerifyData();
+                                }
+                                else
+                                    Console.WriteLine("Error while trying get challenge from email");
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine("Exception while trying get challenge from email");
+                                throw;
+                            }                                                 
+                        }
+                    }
+                    else
+                        Console.WriteLine("Error while trying get challenge");
+                }
+                else if (currentUser.Value == InstaLoginResult.TwoFactorRequired)
+                {
+                    await TwoFactorAuth();
+                }
+            }
+        }
+
+        private void LoadSession()
+        {
+            Console.WriteLine("Loading session..");
+            InstaApi.SessionHandler.Load();
+        }
+
+        private void SaveSession()
+        {
+            if (InstaApi == null)
+                return;
+            if (!InstaApi.IsUserAuthenticated)
+                return;
+            if (!File.Exists(pathAccount))
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + pathAccount + userSession.UserName);
+                dirInfo.Create();
+            }
+            InstaApi.SessionHandler.Save();
+        }
+
+        private async Task VerifyData()
+        {
+            Console.WriteLine("Please enter verification code: ");
+            string code = Console.ReadLine();
+            code = code.Trim();
+            code = code.Replace(" ", "");
+            var regex = new Regex(@"^-*[0-9,\.]+$");
+            if (!regex.IsMatch(code))
+            {
+                Console.WriteLine("Verification code is numeric!!!", "ERROR");
+                return;
+            }
+            if (code.Length != 6)
+            {
+                Console.WriteLine("Verification code must be 6 digits!!!", "ERROR");
+                return;
+            }
+            try
+            {
+                var verifyLogin = await InstaApi.VerifyCodeForChallengeRequireAsync(code);
+                if (verifyLogin.Succeeded)
+                {
+                    SaveSession();
+                    Console.WriteLine("Connected!");
+                }
+                else
+                {
+                    if (verifyLogin.Value == InstaLoginResult.TwoFactorRequired)
+                    {
+                       await TwoFactorAuth();
+                    }
+                    else
+                        Console.WriteLine(verifyLogin.Info.Message, "ERROR");
+                }
+
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message, "Exception"); }
+        }
+
+        private async Task TwoFactorAuth()
+        {
+            if (InstaApi == null)
+                return;
+
+            Console.WriteLine("Runned two factor auth..");
+            Console.WriteLine("Please type your two factor code and press enter");
+            string authCode = Console.ReadLine();
+            var twoFactorLogin = await InstaApi.TwoFactorLoginAsync(authCode);            // send two factor code
+            Console.WriteLine(twoFactorLogin.Value);
+            if (twoFactorLogin.Succeeded)
+            {
+                SaveSession();
+            }
+            else
+            {
+                Console.WriteLine("Eror while trying to get two factor auth");
             }
         }
     }
