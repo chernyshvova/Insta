@@ -83,6 +83,7 @@ artifacts/
 StyleCopReport.xml
 
 # Files built by Visual Studio
+**.obj
 *_i.c
 *_p.c
 *_h.h
@@ -379,3 +380,4 @@ API
 Training
 Blog
 About
+**.cache
