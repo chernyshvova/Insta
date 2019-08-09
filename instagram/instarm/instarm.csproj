@@ -93,6 +93,9 @@
     <Compile Include="IAccount.cs" />
     <Compile Include="Database\IDbHelper.cs" />
     <Compile Include="MassAccountManager.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="Messages.cs" />
+    <Compile Include="PathContract.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

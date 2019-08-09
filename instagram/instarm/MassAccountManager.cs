@@ -135,7 +135,7 @@ namespace instarm
                 UserName = profile.name,
                 Password = profile.password
             };
-            if (profile.proxyHost != null)
+            if (!string.IsNullOrEmpty(profile.proxyHost))
             {
                 ProxyData data = new ProxyData(profile.proxyHost, profile.proxyPort, profile.proxyUsername, profile.proxyPassword);
                 Account account = new Account(userSession, proxyhandler.getProxy(data), data);

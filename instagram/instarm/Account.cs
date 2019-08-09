@@ -19,10 +19,6 @@ namespace instarm
         private readonly IInstaApi InstaApi;
         private readonly UserSessionData userSession;
         private ProxyData proxydata = new ProxyData(null, null,null,null);
-        const string stateFile = @"\state.bin";
-        private const string pathAccount = @"\accounts\";
-        private const string pathImg = @"\images\";
-        private const string pathAvatar = @"\avatars\";
 
         public Account(UserSessionData userSession)
         {
@@ -31,7 +27,7 @@ namespace instarm
             .SetUser(userSession)
             .UseLogger(new DebugLogger(LogLevel.All)) // use logger for requests and debug messages
             .SetRequestDelay(RequestDelay.FromSeconds(2, 2))  //отсрочка запросов
-            .SetSessionHandler(new FileSessionHandler() { FilePath = (Environment.CurrentDirectory + pathAccount + userSession.UserName + stateFile) })
+            .SetSessionHandler(new FileSessionHandler() { FilePath = (Environment.CurrentDirectory + PathContract.pathAccount + userSession.UserName + PathContract.stateFile) })
             .Build();
         }
         public Account(UserSessionData userSession, HttpClientHandler proxy, ProxyData data)
@@ -42,7 +38,7 @@ namespace instarm
             .SetUser(userSession)
             .UseLogger(new DebugLogger(LogLevel.All))
             .SetRequestDelay(RequestDelay.FromSeconds(2, 2))
-            .SetSessionHandler(new FileSessionHandler() { FilePath = (Environment.CurrentDirectory + pathAccount + userSession.UserName + stateFile) })
+            .SetSessionHandler(new FileSessionHandler() { FilePath = (Environment.CurrentDirectory + PathContract.pathAccount + userSession.UserName + PathContract.stateFile) })
             .UseHttpClientHandler(proxy)
             .Build();
         }
@@ -54,7 +50,7 @@ namespace instarm
         public async Task SignIn()
         {
             var delay = RequestDelay.FromSeconds(2, 2);
-            var relatedPath = Environment.CurrentDirectory + pathAccount + userSession.UserName + stateFile;
+            var relatedPath = Environment.CurrentDirectory + PathContract.pathAccount + userSession.UserName + PathContract.stateFile;
             try
             {
                 if (File.Exists(relatedPath))
@@ -111,7 +107,7 @@ namespace instarm
         /// <returns></returns>
         public async Task ChangeAvatar(string imgName)
         {
-            var picturePath = Environment.CurrentDirectory + pathAvatar + imgName;
+            var picturePath = Environment.CurrentDirectory + PathContract.pathAvatar + imgName;
                                                                     // note: only JPG and JPEG format will accept it in instagram!
             if (File.Exists(picturePath))
             {
@@ -133,10 +129,10 @@ namespace instarm
             }
             else
             {
-                DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + pathAvatar);
+                DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + PathContract.pathAvatar);
                 dirInfo.Create();
                 Console.WriteLine("File not found : " + picturePath);
-                Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + pathAvatar);
+                Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathAvatar);
             }
         }
 
@@ -174,7 +170,7 @@ namespace instarm
         /// <returns></returns>
         public async Task SetPost(string imgName, string message)
         {
-            var relatedPath = Environment.CurrentDirectory + pathImg + imgName;
+            var relatedPath = Environment.CurrentDirectory + PathContract.pathImg + imgName;
 
             if (File.Exists(relatedPath))
             {
@@ -200,10 +196,10 @@ namespace instarm
             }
             else
             {
-                DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + pathImg );
+                DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + PathContract.pathImg );
                 dirInfo.Create();
                 Console.WriteLine("File not found : " + relatedPath);
-                Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + pathImg);
+                Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathImg);
             }
 
 
@@ -294,22 +290,30 @@ namespace instarm
 
         public async Task DirectCheckMessages()
         {
-            var inbox = await InstaApi.MessagingProcessor.GetDirectInboxAsync(PaginationParameters.MaxPagesToLoad(1));
+            var inbox = await InstaApi.MessagingProcessor.GetDirectInboxAsync(PaginationParameters.MaxPagesToLoad(5));
             if (inbox.Value.Inbox.UnseenCount!=0)
             {
                 Console.WriteLine("Unreaded messages: " + inbox.Value.Inbox.UnseenCount);
+                Messages msg = new Messages(userSession.UserName);
                 foreach (var thread in inbox.Value.Inbox.Threads)
                 {
                     if (thread.HasUnreadMessage)
                     {
-                        var threads = await InstaApi.MessagingProcessor.GetDirectInboxThreadAsync(thread.ThreadId, PaginationParameters.MaxPagesToLoad(1));
-                        foreach (var item in threads.Value.Items)
+                        bool readed = false; 
+                        var threads = await InstaApi.MessagingProcessor.GetDirectInboxThreadAsync(thread.ThreadId, PaginationParameters.MaxPagesToLoad(20));
+                        foreach (var item in threads.Value.Items.AsEnumerable().Reverse())
                         {
-                            Console.WriteLine(item.Text);  //check here
-                            var mark = await InstaApi.MessagingProcessor.MarkDirectThreadAsSeenAsync(thread.ThreadId, item.ItemId);
+                            Console.WriteLine(item.Text);
+                                msg.StackMessage(thread.Title, thread.VieweId ,item.UserId.ToString(), item.ItemId, item.Text, item.TimeStamp);
+                                if (!readed)
+                                {
+                                    var mark = await InstaApi.MessagingProcessor.MarkDirectThreadAsSeenAsync(thread.ThreadId, item.ItemId);
+                                    readed = true;
+                                }                      
                         }                       
                     }
                 }
+                msg.WriteMessages();
             }
             else
             {
@@ -472,9 +476,9 @@ namespace instarm
                 return;
             if (!InstaApi.IsUserAuthenticated)
                 return;
-            if (!File.Exists(pathAccount))
+            if (!File.Exists(PathContract.pathAccount))
             {
-                DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + pathAccount + userSession.UserName);
+                DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + PathContract.pathAccount + userSession.UserName);
                 dirInfo.Create();
             }
             InstaApi.SessionHandler.Save();

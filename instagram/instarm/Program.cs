@@ -1,4 +1,6 @@
-﻿using System;
+﻿using instarm.Database;
+using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace instarm
@@ -9,10 +11,14 @@ namespace instarm
         {
             if (args.Length == 0)
             {
+                Init();
                 CommandLine cmd = new CommandLine();
                 cmd.WriteHelp();
             }
-            RunAsync(args);
+            if (args.Length != 0)
+            {
+                RunAsync(args);
+            }
             Console.ReadKey();
         }
 
@@ -21,10 +27,11 @@ namespace instarm
             try
             {
                 var result = Task.Run(() => MainAsync(args));
+                result.Wait();
+                Console.WriteLine("========== END ==========");
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine("Error!:  " + ex);
             }
         }
@@ -34,6 +41,26 @@ namespace instarm
             CommandLine cmd = new CommandLine();
             await cmd.Execute(args);
             return false;
+        }
+        public static void Init()
+        {
+            if (!File.Exists(Environment.CurrentDirectory + @"\" + DbContract.DATABASE))
+            {
+                DbHelperSQLite dbhelper = new DbHelperSQLite();
+                dbhelper.CreateTables();
+            }
+            if (!Directory.Exists(Environment.CurrentDirectory + PathContract.pathAccount))
+            {
+                Directory.CreateDirectory(Environment.CurrentDirectory + PathContract.pathAccount);
+            }
+            if (!Directory.Exists(Environment.CurrentDirectory + PathContract.pathAvatar))
+            {
+                Directory.CreateDirectory(Environment.CurrentDirectory + PathContract.pathAvatar);
+            }
+            if (!Directory.Exists(Environment.CurrentDirectory + PathContract.pathImg))
+            {
+                Directory.CreateDirectory(Environment.CurrentDirectory + PathContract.pathImg);
+            }
         }
     }
 }
