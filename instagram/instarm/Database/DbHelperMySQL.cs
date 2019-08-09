@@ -98,7 +98,10 @@ namespace instarm
             Close();
             return profilesList;
         }
-
+        public void writeMessages(List<Message> data)
+        {
+            //реализовать функцию
+        }
         private void Close() {
             mysql_connection.Close();
         }

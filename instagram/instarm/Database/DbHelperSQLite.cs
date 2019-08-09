@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 
 namespace instarm.Database
 {
@@ -17,6 +18,7 @@ namespace instarm.Database
                 {
                     ConnectionString = "Data Source = " + DbContract.DATABASE
                 };
+
                 sqlConnection.Open();               
                 }
             catch (SQLiteException ex)
@@ -30,6 +32,8 @@ namespace instarm.Database
                     // Do Something          
             }
         }
+
+       
 
         public List<Profile> GetProfilesByTag(string tag)
         {
@@ -57,6 +61,7 @@ namespace instarm.Database
             var data = DoTask(DbContract.SELECTPROFILE + " where " + DbContract.USERNAME + "='" + name + "';");
             if (!data.HasRows)
             {
+                Console.WriteLine("Can`t find any data by profilename in database");
                 System.ArgumentException argEx = new System.ArgumentException("Can`t find any data by profilename in database");
                 throw argEx;
             }
@@ -73,6 +78,36 @@ namespace instarm.Database
                 return profile;
             }
         }
+
+        public void writeMessages(List<Message> data)
+        {
+            Connect();
+            SQLiteCommand cmd = sqlConnection.CreateCommand();
+            foreach (var item in data)
+            {
+                try
+                {
+                    cmd.CommandText = DbContract.INSERTMESSAGE;
+                    cmd.Parameters.AddWithValue("@id", item.id);
+                    cmd.Parameters.AddWithValue("@threadid", item.threadId);
+                    cmd.Parameters.AddWithValue("@sender", item.sender);
+                    cmd.Parameters.AddWithValue("@reciver", item.reciver);
+                    cmd.Parameters.AddWithValue("@message", item.message);
+                    cmd.Parameters.AddWithValue("@time", item.timestamp);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.Parameters.Clear();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error while inserting data from db: " + ex);
+                }
+                
+            }
+            Close();
+        }
+
+
         private Profile DbDataReader(SQLiteDataReader reader)
         {
             Profile prof = new Profile();
@@ -107,6 +142,8 @@ namespace instarm.Database
             return prof;
         }
 
+
+
         private SQLiteDataReader DoTask(string sqlCommandText)
         {
             SQLiteCommand cmd = sqlConnection.CreateCommand();
@@ -114,9 +151,33 @@ namespace instarm.Database
             return cmd.ExecuteReader();
         }
 
+        public void CreateTables() {
+            try
+            {
+                if (!File.Exists(Environment.CurrentDirectory + @"\" + DbContract.DATABASE))
+                {
+                    SQLiteConnection.CreateFile(DbContract.DATABASE);
+                }
+                Connect();
+                SQLiteCommand cmd = sqlConnection.CreateCommand();
+                cmd.CommandText = DbContract.CREATEACCOUNTTABLE;
+                cmd.ExecuteNonQuery();
+                cmd.CommandText = DbContract.CREATEMSGTABLE;
+                cmd.ExecuteNonQuery();
+                Close();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error while creating tables in db");
+                throw;
+            }
+          
+        }
+
         private void Close()
         {
             sqlConnection.Close();
         }
+
     }
 }
