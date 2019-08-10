@@ -101,14 +101,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account.cs" />
-    <Compile Include="AccountManager.cs" />
+    <Compile Include="AccountCreator.cs" />
     <Compile Include="CommandLine.cs" />
     <Compile Include="Database\DbContract.cs" />
     <Compile Include="Database\DbHelperMySQL.cs" />
     <Compile Include="Database\DbHelperSQLite.cs" />
     <Compile Include="IAccount.cs" />
     <Compile Include="Database\IDbHelper.cs" />
-    <Compile Include="MassAccountManager.cs" />
+    <Compile Include="AccountManager.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="PathContract.cs" />

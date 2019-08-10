@@ -26,7 +26,7 @@ namespace instarm
         const string AvatarCmd = "-avatar";
         const string HelpCmd = "-help";
         Commands cmd = new Commands();
-        MassAccountManager manager = new MassAccountManager();
+        AccountManager manager = new AccountManager();
         List<string> input = new List<string>();
         enum Keys
         {
