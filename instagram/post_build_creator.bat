@@ -10,15 +10,8 @@ IF Not exist "%~dp0\build\bin" (
 mkdir "%~dp0\build\bin"
 )
 
-IF Not exist "%~dp0\build\avatars" (
-mkdir "%~dp0\build\avatars"
-)
+copy "%~dp0%instarm\bin\Release\instagram.db" build\instagram.db 
 
-IF Not exist "%~dp0\build\images" (
-mkdir "%~dp0\build\images"
-)
 
-copy "%~dp0%instarm\bin\Release\instagram.db" build\instagram.db
-
-xcopy "%~dp0\instarm\bin\Release" "%~dp0\build\bin"
+xcopy "%~dp0\instarm\bin\Release" "%~dp0\build\bin" /E 
 
