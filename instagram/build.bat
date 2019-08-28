@@ -11,7 +11,7 @@ IF exist "%basePath_19%Current\Bin\MSBuild.exe" (
 )
 
 IF exist "%basePath_17%15.0\Bin\MSBuild.exe" (
-"%basePath_17%15.0\Bin\MSBuild.exe" "%~dp0\instarm.sln" property:Configuration=Release -verbosity:minimal
+"%basePath_17%15.0\Bin\MSBuild.exe" "%~dp0\instarm.sln" /property:Configuration=Release -verbosity:minimal
 )
 
 call "%~dp0\post_build_creator.bat" >nul
