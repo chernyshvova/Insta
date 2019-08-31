@@ -135,6 +135,35 @@ namespace instarm
                 Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathAvatar);
             }
         }
+        public async Task ChangeAvatarPath(string path)
+        {
+            // note: only JPG and JPEG format will accept it in instagram!
+            if (File.Exists(path))
+            {
+                try
+                {
+                    var pictureBytes = File.ReadAllBytes(path);
+                    var result = await InstaApi.AccountProcessor.ChangeProfilePictureAsync(pictureBytes);
+                    if (result.Succeeded)
+                    {
+                        Console.WriteLine("New profile picture: " + result.Value.ProfilePicUrl);
+                    }
+                    else
+                        Console.WriteLine("Error while changing profile picture: " + result.Info.Message);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Error: No access to image");
+                }
+            }
+            else
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + PathContract.pathAvatar);
+                dirInfo.Create();
+                Console.WriteLine("File not found : " + path);
+                Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathAvatar);
+            }
+        }
 
         private string GetIdFromUri(string mediaUrl)
         {
@@ -201,10 +230,41 @@ namespace instarm
                 Console.WriteLine("File not found : " + relatedPath);
                 Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathImg);
             }
+        }
+        public async Task SetPostByPath(string path, string message)
+        {
+            if (File.Exists(path))
+            {
+                Console.WriteLine("Loading..");
+                var mediaImage = new InstaImageUpload
+                {
+                    // leave zero, if you don't know how height and width is it.
+                    Height = 0,
+                    Width = 0,
+                    Uri = path
+                };
+                /* Add user tag (tag people)
+                mediaImage.UserTags.Add(new InstaUserTagUpload
+                {
+                    Username = "chol",
+                    X = 0.5,
+                    Y = 0.5
+                }); */
+                var result = await InstaApi.MediaProcessor.UploadPhotoAsync(mediaImage, message);
+                Console.WriteLine(result.Succeeded
+                    ? $"Media created: {result.Value.Pk}, {result.Value.Caption}"
+                    : $"Unable to upload photo: {result.Info.Message}");
+            }
+            else
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + PathContract.pathImg);
+                dirInfo.Create();
+                Console.WriteLine("File not found : " + path);
+                Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathImg);
+            }
 
 
         }
-
         /// <summary>
         /// Комментирование поста
         /// </summary>

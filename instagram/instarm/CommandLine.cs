@@ -9,6 +9,7 @@ namespace instarm
         const string PostCmd = "-post";
         const string LikeCmd = "-like";
         const string DirectCmd = "-direct";
+        const string Path = "--path";
 
         const string Send = "--send";
         const string Answer= "--answer";
@@ -32,6 +33,7 @@ namespace instarm
         {
             SetPostByTag,
             SetPostSingle,
+            SetPostPath,
             LikeMediaByTag,
             LikeMediaSingle,
             LikeExplore,
@@ -39,6 +41,7 @@ namespace instarm
             Unfollow,
             CommentMedia,
             ChangeAvatar,
+            ChangeAvatarPath,
             DirectAnswer,
             DirectSend,
             DirectCheck,
@@ -93,6 +96,13 @@ namespace instarm
                     }
                     await manager.SetPostSingle(input[2], input[3], message);
                     break;
+                case Keys.SetPostPath:
+                    for (int i = 4; i != input.Count; i++)
+                    {
+                        message += input[i] + " ";
+                    }
+                    await manager.SetPostSinglePath(input[2], input[3], message);
+                    break;
                 case Keys.LikeMediaByTag:
                     await manager.LikeMediaByTag(input[2], input[3]);
                     break;
@@ -108,6 +118,9 @@ namespace instarm
                     break;
                 case Keys.ChangeAvatar:
                     await manager.ChangeAvatar(input[1], input[2]);
+                    break;
+                case Keys.ChangeAvatarPath:
+                    await manager.ChangeAvatarPath(input[2], input[3]);
                     break;
                 case Keys.LikeExplore:
                     await manager.ExploreLikeHashtag(input[2], input[3], input[4]);
@@ -163,6 +176,17 @@ namespace instarm
                     if (input.Count >= 5)
                     {
                         return Keys.SetPostSingle;
+                    }
+                    else
+                    {
+                        return Keys.Error;
+                    }
+                }
+                if (input[1].Equals(Path))
+                {
+                    if (input.Count >= 5)
+                    {
+                        return Keys.SetPostPath;
                     }
                     else
                     {
@@ -231,6 +255,17 @@ namespace instarm
             }
             if (input[0].Equals(AvatarCmd))
             {
+                if (input[1].Equals(Path))
+                {
+                    if (input.Count == 4)
+                    {
+                        return Keys.ChangeAvatarPath;
+                    }
+                    else
+                    {
+                        return Keys.Error;
+                    }
+                }
                 if (input.Count == 3)
                 {
                     return Keys.ChangeAvatar;

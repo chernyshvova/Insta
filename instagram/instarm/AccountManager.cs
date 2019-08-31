@@ -29,6 +29,12 @@ namespace instarm
             await account.SignIn();
             await account.SetPost(imgName, message);
         }
+        public async Task SetPostSinglePath(string accountName, string path, string message)
+        {
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.SetPostByPath(path, message);
+        }
 
         public async Task LikeMediaByTag(string tag, string mediaUrl)
         {
@@ -97,7 +103,13 @@ namespace instarm
         {
             Account account = getAccount(accountName);
             await account.SignIn();
-            await account.ChangeAvatar(imgName);     
+            await account.ChangeAvatar(imgName);
+        }
+        public async Task ChangeAvatarPath(string accountName, string path)
+        {
+            Account account = getAccount(accountName);
+            await account.SignIn();
+            await account.ChangeAvatarPath(path);
         }
 
         private void SetAccounts(string tag)
