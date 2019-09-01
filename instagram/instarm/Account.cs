@@ -108,34 +108,14 @@ namespace instarm
         public async Task ChangeAvatar(string imgName)
         {
             var picturePath = Environment.CurrentDirectory + PathContract.pathAvatar + imgName;
-                                                                    // note: only JPG and JPEG format will accept it in instagram!
-            if (File.Exists(picturePath))
-            {
-                try
-                {
-                    var pictureBytes = File.ReadAllBytes(picturePath);
-                    var result = await InstaApi.AccountProcessor.ChangeProfilePictureAsync(pictureBytes);
-                    if (result.Succeeded)
-                    {
-                        Console.WriteLine("New profile picture: " + result.Value.ProfilePicUrl);
-                    }
-                    else
-                        Console.WriteLine("Error while changing profile picture: " + result.Info.Message);
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Error: No access to image");
-                }
-            }
-            else
-            {
-                DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + PathContract.pathAvatar);
-                dirInfo.Create();
-                Console.WriteLine("File not found : " + picturePath);
-                Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathAvatar);
-            }
+            await ChangeAvatarAsync(picturePath);
         }
         public async Task ChangeAvatarPath(string path)
+        {
+            await ChangeAvatarAsync(path);
+        }
+
+        private async Task ChangeAvatarAsync(string path)
         {
             // note: only JPG and JPEG format will accept it in instagram!
             if (File.Exists(path))
@@ -164,7 +144,6 @@ namespace instarm
                 Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathAvatar);
             }
         }
-
         private string GetIdFromUri(string mediaUrl)
         {
             Task<string> task = Task.Run(async () => await media(mediaUrl));
@@ -200,39 +179,14 @@ namespace instarm
         public async Task SetPost(string imgName, string message)
         {
             var relatedPath = Environment.CurrentDirectory + PathContract.pathImg + imgName;
-
-            if (File.Exists(relatedPath))
-            {
-                Console.WriteLine("Loading..");
-                var mediaImage = new InstaImageUpload
-                {
-                    // leave zero, if you don't know how height and width is it.
-                    Height = 0,
-                    Width = 0,
-                    Uri = relatedPath
-                };
-                /* Add user tag (tag people)
-                mediaImage.UserTags.Add(new InstaUserTagUpload
-                {
-                    Username = "chol",
-                    X = 0.5,
-                    Y = 0.5
-                }); */
-                    var result = await InstaApi.MediaProcessor.UploadPhotoAsync(mediaImage, message);
-                Console.WriteLine(result.Succeeded
-                    ? $"Media created: {result.Value.Pk}, {result.Value.Caption}"
-                    : $"Unable to upload photo: {result.Info.Message}");
-            }
-            else
-            {
-                DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + PathContract.pathImg );
-                dirInfo.Create();
-                Console.WriteLine("File not found : " + relatedPath);
-                Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathImg);
-            }
+            await SetPostAsync(relatedPath, message);
         }
+
         public async Task SetPostByPath(string path, string message)
         {
+            await SetPostAsync(path, message);
+        }
+        private async Task SetPostAsync(string path, string message) {
             if (File.Exists(path))
             {
                 Console.WriteLine("Loading..");
@@ -262,9 +216,9 @@ namespace instarm
                 Console.WriteLine("File not found : " + path);
                 Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathImg);
             }
-
-
         }
+
+
         /// <summary>
         /// Комментирование поста
         /// </summary>
