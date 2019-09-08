@@ -1,0 +1,1 @@
+python mail_registrator.py
