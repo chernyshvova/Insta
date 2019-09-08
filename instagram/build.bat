@@ -15,37 +15,5 @@ IF exist "%basePath_17%15.0\Bin\MSBuild.exe" (
 )
 
 call "%~dp0\post_build_creator.bat" >nul
-
-@echo off
-
-
-                       
-echo   ^(                                 ^_
-echo   ^)                               ^/^=^>
-echo  ^(  ^+____________________/\/\___ / /^|
-echo   .''._____________'._____      / /^|/\
-echo  : () :              :\ ----\^|    \ )
-echo   '..'______________.'0^|----^|      \
-echo                    0_0/____/        \
-echo                        ^|----    /----\
-echo                       ^|^| -\\ --^|      \
-echo                       ^|^|   ^|^| ^|^|\      \
-echo                        \\____// '^|      \
-echo Bang! Bang!                    .'/       ^|
-echo                               .:/        ^|
-echo                               :/_________^|
-
-ping 127.0.0.1 -n 2 > nul
-color 4
-ping 127.0.0.1 -n 2 > nul
-color 7
-ping 127.0.0.1 -n 2 > nul
-color 4
-ping 127.0.0.1 -n 2 > nul
-color 7
-ping 127.0.0.1 -n 2 > nul
-color 4
-ping 127.0.0.1 -n 2 > nul
-color 7
 echo done!
 pause >nul
