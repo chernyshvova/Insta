@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mail.dll" Version="3.0.19162.1801" />
+    <PackageReference Include="AE.Net.Mail" Version="1.7.10" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.5.1" />
   </ItemGroup>
 
 </Project>

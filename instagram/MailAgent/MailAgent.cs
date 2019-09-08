@@ -1,12 +1,11 @@
-﻿using Limilabs.Client.IMAP;
-using Limilabs.Mail;
+﻿using AE.Net.Mail;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-
 /// <summary>
 /// https://myaccount.google.com/lesssecureapps
+/// https://github.com/andyedinborough/aenetmail
 /// </summary>
 namespace MailAgent
 {
@@ -14,72 +13,53 @@ namespace MailAgent
     {
         public MailAgent(string login, string password)
         {
-            ParseCredentials(login);
-            ResolvePort();
-            this.m_password = password;
-            this.m_smtpAgent = new Imap();
-
-            if (this.m_ssl)
-            {
-                this.m_smtpAgent.ConnectSSL(this.m_host, this.m_port);
-            }
-            else
-            {
-                this.m_smtpAgent.Connect(this.m_host, this.m_port);
-            }
-
-        }
-
-        public string ParseInsTagrammVify()
-        {
-            const string subject = "Verify Your Account";
-            List<long> uids = this.m_smtpAgent.Search(Flag.New);
-
-            foreach (long uid in uids)
-            {
-                IMail email = new MailBuilder()
-                    .CreateFromEml(this.m_smtpAgent.GetMessageByUID(uid));
-
-                if(email.Subject == subject)
-                {
-                    Console.WriteLine(email.Text);
-                }
-                return email.Text;
-            }
-            return "Fuck off";
-        }
-        private void ParseCredentials(string login)
-        {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             const int hostIndex = 1;
-            this.m_host = login.Split("@")[hostIndex];
+            string serverName = login.Split("@")[hostIndex];
+            ResolvePort(serverName);
+            m_client = new AE.Net.Mail.ImapClient(m_host, login, password, AE.Net.Mail.AuthMethods.Login, m_port, m_ssl, true);
+
         }
 
-        private void ResolvePort()
+        public string ParseMessage(string subj, string sender, IMessageParser parser)
         {
-            switch(this.m_host)
+            SearchCondition condition = new SearchCondition();
+            condition.Value = string.Format(@"X-GM-RAW ""AFTER:{0:yyyy-MM-dd}""", new DateTime(2000, 1, 1));
+            var msgs = m_client.SearchMessages(condition);
+
+            foreach(var msg in msgs)
+            {
+                if (msg.Value.Subject == subj && msg.Value.From.Address == sender)
+                {
+                    return parser.Parse(msg.Value.Body);
+                }
+            }
+
+            throw new Exception("message is not found");
+        }
+
+        private void ResolvePort(string serverName)
+        {
+            switch(serverName)
             {
                 case "gmail.com":
-                    this.SetParsedData(993, true);
+                    this.SetParsedData(993, true, "imap.gmail.com");
                     break;
                 default:
                     throw new Exception("Unknown parsed host");
             }
         }
 
-        private void SetParsedData(int port, bool ssl)
+        private void SetParsedData(int port, bool ssl, string host)
         {
-            if(ssl)
-            {
-                this.m_ssl = ssl;
-            }
-            this.m_port = port;
+            m_ssl = ssl;
+            m_port = port;
+            this.m_host = host;
         }
 
-        private string m_login;
-        private string m_password;
         private string m_host;
         private int m_port;
-        private Imap m_smtpAgent;
+        AE.Net.Mail.ImapClient m_client;
         private bool m_ssl;
 
 
