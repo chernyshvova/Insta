@@ -8,7 +8,7 @@ namespace MailAgent
 {
     class InstagrammVerifyParser : IMessageParser
     {
-        public string Parse(string message)
+        public string Parse(string message, Language language)
         {
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(message);
