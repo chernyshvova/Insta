@@ -7,7 +7,7 @@ using System.Text;
 /// https://myaccount.google.com/lesssecureapps
 /// https://github.com/andyedinborough/aenetmail
 /// </summary>
-namespace MailAgent
+namespace mail
 {
     enum Language
     {
@@ -27,10 +27,10 @@ namespace MailAgent
 
         }
 
-        public string ParseMessage(string subj, string sender, IMessageParser parser)
+        public string ParseMessage(string subj, string sender, DateTime dateFrom, IMessageParser parser)
         {
             SearchCondition condition = new SearchCondition();
-            condition.Value = string.Format(@"X-GM-RAW ""AFTER:{0:yyyy-MM-dd}""", new DateTime(2000, 1, 1));
+            condition.Value = string.Format(@"X-GM-RAW ""AFTER:{0:yyyy-MM-dd}""", dateFrom);
             var msgs = m_client.SearchMessages(condition);
 
             List<Lazy<MailMessage>> resultMessages = new List<Lazy<MailMessage>>();

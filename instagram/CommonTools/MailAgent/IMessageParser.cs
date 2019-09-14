@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MailAgent
+namespace mail
 {
     interface IMessageParser
     {
