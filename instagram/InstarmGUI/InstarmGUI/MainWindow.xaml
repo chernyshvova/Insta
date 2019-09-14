@@ -70,7 +70,8 @@
                           Grid.Column="3" Grid.Row="1" 
                           Margin="5,5,5,5"/>
                             </StackPanel>
-                            <DataGrid ItemsSource="{Binding Items, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="false" CanUserReorderColumns="False" MaxHeight ="200" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                            <DataGrid ItemsSource="{Binding Items, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ColumnWidth="*"
+                                      AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="false" CanUserReorderColumns="False" MaxHeight ="200" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Аккаунт" IsReadOnly="True" MinWidth="200" Binding="{Binding name}"/>
                                     <DataGridTextColumn Header="Тег" IsReadOnly="True" MinWidth="100" Binding="{Binding tag}"/>
@@ -86,118 +87,128 @@
                             </DataGrid>
                         </StackPanel>
                     </Grid>
-                    <Button Content="Выполнить!" Command="{Binding DoStuffCommand}" Grid.Column="6" Grid.Row="3" Margin="20,20, 20, 20"/>
-                    <ComboBox Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="6" 
-                  Margin="20,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" MinWidth="160"
-                  ItemsSource="{Binding CommandsList}"
-            DisplayMemberPath="Name"
-            SelectedValuePath="Name"
-            SelectedValue="{Binding CurrentSelection.Name}"
-            SelectedItem="{Binding CurrentSelection}"
-                  
-                  >
 
-                    </ComboBox>
-                    <!-- Панель -post -->
-                    <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,40,10,10" Visibility="{Binding Path=ShowPanelPost, 
+ 
+                    <DockPanel Margin="8" Grid.Column="6" Grid.Row="1" Grid.RowSpan="3">
+                        <Border CornerRadius="6" BorderBrush="Gray" Background="LightGray" BorderThickness="2" DockPanel.Dock="Top">
+                            <StackPanel Orientation="Vertical">
+
+                                <ComboBox Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="6" 
+                                   Margin="20,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" MinWidth="160"
+                                    ItemsSource="{Binding CommandsList}"
+                                      DisplayMemberPath="Name"
+                                         SelectedValuePath="Name"
+                                         SelectedValue="{Binding CurrentSelection.Name}"
+                                          SelectedItem="{Binding CurrentSelection}" >
+                                </ComboBox>
+                                <!-- Панель -post -->
+                                <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,0,10,10" Visibility="{Binding Path=ShowPanelPost, 
                     Converter={StaticResource booleanToVisibilityConverter}}">
-                        <TextBlock Text="Путь к изображению: " Margin="10,10,10,5"></TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Margin="10,5,0,10"
+                                    <TextBlock Text="Путь к изображению: " Margin="10,10,10,5"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Margin="10,5,0,10"
                  IsReadOnly="True" MinWidth="120" MaxWidth="120" Text="{Binding Path=Path, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
-                            <Button Name="btnOpenFile2" Command="{Binding PathCommand}" Grid.Column="3" Grid.Row="0" Margin="1,5,5,10">Open</Button>
-                        </StackPanel>
-                        <TextBlock Text="Сообщение к изображению: " Margin="10,10,10,5"></TextBlock>
-                        <TextBox Margin="10,0,10,10" TextWrapping="Wrap" MinHeight="60" MaxHeight="60"
+                                        <Button Name="btnOpenFile2" Command="{Binding PathCommand}" Grid.Column="3" Grid.Row="0" Margin="1,5,5,10">Open</Button>
+                                    </StackPanel>
+                                    <TextBlock Text="Сообщение к изображению: " Margin="10,10,10,5"></TextBlock>
+                                    <TextBox Margin="10,0,10,0" TextWrapping="Wrap" MinHeight="60" MaxHeight="60"
              VerticalScrollBarVisibility="Visible"       
                      Text="{Binding Path=Message, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                    </StackPanel>
+                                </StackPanel>
 
-                    <!-- Панель -like -tag -->
+                                <!-- Панель -like -tag -->
 
-                    <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,40,10,10" Visibility="{Binding Path=ShowPanelLike, 
+                                <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,0,10,10" Visibility="{Binding Path=ShowPanelLike, 
                     Converter={StaticResource booleanToVisibilityConverter}}">
-                        <TextBlock Text="Url изображения: " Margin="10,10,10,5"></TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Margin="10,5,0,10"
+                                    <TextBlock Text="Url изображения: " Margin="10,10,10,5"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Margin="10,5,0,10"
                  MinWidth="160" MaxWidth="160" Text="{Binding Path=Data, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                        </StackPanel>
-                    </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
 
 
-                    <!-- Панель -like -tag mass -->
+                                <!-- Панель -like -tag mass -->
 
-                    <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,40,10,10" Visibility="{Binding Path=ShowPanelLikeMass, 
+                                <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,0,10,10" Visibility="{Binding Path=ShowPanelLikeMass, 
                     Converter={StaticResource booleanToVisibilityConverter}}">
-                        <TextBlock Text="Хэштег: " Margin="10,10,10,5"></TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Margin="10,5,0,10"
+                                    <TextBlock Text="Хэштег: " Margin="10,10,10,5"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Margin="10,5,0,10"
                  MinWidth="160" MaxWidth="160" Text="{Binding Path=Data, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                        </StackPanel>
-                    </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
 
 
-                    <!-- Панель comment -->
-                    <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,40,10,10" Visibility="{Binding Path=ShowPanelComment, 
+                                <!-- Панель comment -->
+                                <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,0,10,0" Visibility="{Binding Path=ShowPanelComment, 
                     Converter={StaticResource booleanToVisibilityConverter}}">
-                        <TextBlock Text="Url медиа: " Margin="10,10,10,5"></TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Margin="10,5,0,10"
+                                    <TextBlock Text="Url медиа: " Margin="10,10,10,5"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Margin="10,5,0,10"
                  MinWidth="160" MaxWidth="160" Text="{Binding Path=Data, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
-                        </StackPanel>
-                        <TextBlock Text="Сообщение к медиа: " Margin="10,10,10,5"></TextBlock>
-                        <TextBox Margin="10,0,10,10" TextWrapping="Wrap" MinHeight="60" MaxHeight="60"
+                                    </StackPanel>
+                                    <TextBlock Text="Сообщение к медиа: " Margin="10,10,10,5"></TextBlock>
+                                    <TextBox Margin="10,0,10,10" TextWrapping="Wrap" MinHeight="60" MaxHeight="60"
              VerticalScrollBarVisibility="Visible"       
                      Text="{Binding Path=Message, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                    </StackPanel>
+                                </StackPanel>
 
-                    <!-- Панель avatar -->
-                    <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,40,10,10" Visibility="{Binding Path=ShowPanelAvatar, 
+                                <!-- Панель avatar -->
+                                <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,0,10,10" Visibility="{Binding Path=ShowPanelAvatar, 
                     Converter={StaticResource booleanToVisibilityConverter}}">
-                        <TextBlock Text="Путь к аватару: " Margin="10,10,10,5"></TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Margin="10,5,0,10"
+                                    <TextBlock Text="Путь к аватару: " Margin="10,10,10,5"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Margin="10,5,0,10"
                  IsReadOnly="True" MinWidth="120" MaxWidth="120" Text="{Binding Path=Path, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
-                            <Button Name="btnOpenFile" Command="{Binding PathCommand}" Grid.Column="3" Grid.Row="0" Margin="1,5,5,10">Open</Button>
-                        </StackPanel>
-                    </StackPanel>
+                                        <Button Name="btnOpenFile" Command="{Binding PathCommand}" Grid.Column="3" Grid.Row="0" Margin="1,5,5,10">Open</Button>
+                                    </StackPanel>
+                                </StackPanel>
 
-                    <!-- Панель follow -->
-                    <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,40,10,10" Visibility="{Binding Path=ShowPanelFollow, 
+                                <!-- Панель follow -->
+                                <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,0,10,10" Visibility="{Binding Path=ShowPanelFollow, 
                     Converter={StaticResource booleanToVisibilityConverter}}">
-                        <TextBlock Text="Имя пользователя: " Margin="10,10,10,5"></TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Margin="10,5,0,10"
+                                    <TextBlock Text="Имя пользователя: " Margin="10,10,10,5"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Margin="10,5,0,10"
                  MinWidth="160" MaxWidth="160" Text="{Binding Path=Data, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                        </StackPanel>
-                    </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
 
-                    <!-- Панель Unfollow -->
-                    <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,40,10,10" Visibility="{Binding Path=ShowPanelUnFollow, 
+                                <!-- Панель Unfollow -->
+                                <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,0,10,10" Visibility="{Binding Path=ShowPanelUnFollow, 
                     Converter={StaticResource booleanToVisibilityConverter}}">
-                        <TextBlock Text="Имя пользователя: " Margin="10,10,10,5"></TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Margin="10,5,0,10"
+                                    <TextBlock Text="Имя пользователя: " Margin="10,10,10,5"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Margin="10,5,0,10"
                  MinWidth="160" MaxWidth="160" Text="{Binding Path=Data, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                        </StackPanel>
-                    </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
 
-                    <!-- Панель Direct -->
-                    <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,40,10,10" Visibility="{Binding Path=ShowPanelDirect, 
+                                <!-- Панель Direct -->
+                                <StackPanel Grid.RowSpan="2" Grid.Column="6" Grid.Row="1" Margin="10,0,10,0" Visibility="{Binding Path=ShowPanelDirect, 
                     Converter={StaticResource booleanToVisibilityConverter}}">
-                        <TextBlock Text="Кому: " Margin="10,10,10,5"></TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Margin="10,5,0,10"
+                                    <TextBlock Text="Кому: " Margin="10,10,10,5"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Margin="10,5,0,10"
                  MinWidth="160" MaxWidth="160" Text="{Binding Path=Data, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                        </StackPanel>
-                        <TextBlock Text="Сообщение Direct: " Margin="10,10,10,5"></TextBlock>
-                        <TextBox Margin="10,0,10,10" TextWrapping="Wrap" MinHeight="60" MaxHeight="60"
+                                    </StackPanel>
+                                    <TextBlock Text="Сообщение Direct: " Margin="10,0,10,5"></TextBlock>
+                                    <TextBox Margin="10,0,10,10" TextWrapping="Wrap" MinHeight="60" MaxHeight="60"
              VerticalScrollBarVisibility="Visible"       
                      Text="{Binding Path=Message, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                    </StackPanel>
+                                </StackPanel>
+                                <Button Content="Выполнить!" Command="{Binding DoStuffCommand}" Grid.Column="6" Grid.Row="3" Margin="20,5, 10, 10" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Width="150"/>
+
+                            </StackPanel>
+                        </Border>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Height="25" />
+                    </DockPanel>
+                    
+                    
                 </Grid>
             </TabItem>
             <TabItem Header="Автозадачи">
