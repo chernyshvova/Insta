@@ -1,0 +1,14 @@
+{
+"accounts":[
+    {
+        "login" : "test@gmail.com",
+        "password" : "password",
+        "keys" : [
+            "general",
+            "ru"
+        ]
+    }
+
+    
+]
+}
