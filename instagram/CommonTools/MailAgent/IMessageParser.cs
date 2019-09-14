@@ -6,6 +6,6 @@ namespace MailAgent
 {
     interface IMessageParser
     {
-        string Parse(string message, Language language);
+        string Parse(string message);
     }
 }

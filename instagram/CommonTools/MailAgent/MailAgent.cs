@@ -33,15 +33,26 @@ namespace MailAgent
             condition.Value = string.Format(@"X-GM-RAW ""AFTER:{0:yyyy-MM-dd}""", new DateTime(2000, 1, 1));
             var msgs = m_client.SearchMessages(condition);
 
+            List<Lazy<MailMessage>> resultMessages = new List<Lazy<MailMessage>>();
             foreach(var msg in msgs)
             {
                 if (msg.Value.Subject == subj && msg.Value.From.Address == sender)
                 {
-                    return parser.Parse(msg.Value.Body, Language.Eng);
+                    resultMessages.Add(msg);
                 }
             }
 
-            throw new Exception("message is not found");
+            resultMessages.Sort((x, y) =>
+            x.Value.Date.CompareTo(y.Value.Date)
+            );
+
+            if(resultMessages.Count == 0)
+            {
+                throw new Exception("message is not found");
+            }
+
+            return parser.Parse(resultMessages[resultMessages.Count].Value.Body);
+            
         }
 
         private void ResolvePort(string serverName)
