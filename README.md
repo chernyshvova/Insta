@@ -1,27 +1,30 @@
 # Insta
 
-Git manual
-Git bash - https://git-scm.com/downloads
+Боты для Инстаграмма
 
--Выкачать проект
-git clone https://github.com/chernyshvova/Insta.git
+What we have:
+publish post
+like
+#like
+comment
+change avatar
+subscribe
+unsubscribe
+send message
 
--Выкачать новые изменения с гитхаба
-git pull
+What we need:
+-Autotests:
+https://github.com/chernyshvova/Insta/issues/16
+https://github.com/chernyshvova/Insta/issues/15
 
--Создать локальную учетку
-git config --global user.name "YourName"
-git config --global user.email YourName@gmail.com
+-Manual testing all functional
+-Instagramm game rules - https://github.com/chernyshvova/Insta/issues/17
 
--Увидеть статус измненений
-git status
-
--Добавить изменный файл на контроль
-git add filename
-git add * //все изменные файлы
-
--Создать коммит
-git commit -m "change description"
-
--Залить на гитхаб
-git push
+Plans:
+Сейчас для нас преоритет это закрепиться
+Нужно:
+-Создать тестовые данные для автотестов и ручного тестирования(почты,инстаграмм аккаунты, тулзу что бы забивать прокси в аккаунты)
+-покрыть весь функционал автотестами
+-Протестировать вручную хотя бы десяток аккаунтов
+-Исправить все встречающиеся баги
+-Создать функционал для исключений что бы детектить поведение программы
