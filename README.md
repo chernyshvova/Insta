@@ -2,29 +2,29 @@
 
 Боты для Инстаграмма
 
-What we have:
-publish post
-like
-#like
-comment
-change avatar
-subscribe
-unsubscribe
-send message
+<p>-What we have:<p>
+<p>-publish post<p>
+<p>-like<p>
+<p>#like<p>
+<p>comment<p>
+<p>change avatar<p>
+<p>subscribe<p>
+<p>unsubscribe<p>
+<p>send message<p>
 
-What we need:
--Autotests:
-https://github.com/chernyshvova/Insta/issues/16
-https://github.com/chernyshvova/Insta/issues/15
+<p>What we need:<p>
+<p>-Autotests:<p>
+<p>https://github.com/chernyshvova/Insta/issues/16<p>
+<p>https://github.com/chernyshvova/Insta/issues/15<p>
 
--Manual testing all functional
--Instagramm game rules - https://github.com/chernyshvova/Insta/issues/17
+<p>-Manual testing all functional<p>
+<p>-Instagramm game rules - https://github.com/chernyshvova/Insta/issues/17<p>
 
-Plans:
-Сейчас для нас преоритет это закрепиться
-Нужно:
--Создать тестовые данные для автотестов и ручного тестирования(почты,инстаграмм аккаунты, тулзу что бы забивать прокси в аккаунты)
--покрыть весь функционал автотестами
--Протестировать вручную хотя бы десяток аккаунтов
--Исправить все встречающиеся баги
--Создать функционал для исключений что бы детектить поведение программы
+<p>Plans:<p>
+<p>Сейчас для нас преоритет это закрепиться<p>
+<p>Нужно:<p>
+<p>-Создать тестовые данные для автотестов и ручного тестирования(почты,инстаграмм аккаунты, тулзу что бы забивать прокси в аккаунты)<p>
+<p>-покрыть весь функционал автотестами<p>
+<p>-Протестировать вручную хотя бы десяток аккаунтов<p>
+<p>-Исправить все встречающиеся баги<p>
+<p>-Создать функционал для исключений что бы детектить поведение программы<p>
