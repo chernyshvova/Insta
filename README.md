@@ -2,9 +2,9 @@
 
 Боты для Инстаграмма
 
-What we have:
-publish post
-like
+-What we have:
+-publish post
+-like
 #like
 comment
 change avatar
