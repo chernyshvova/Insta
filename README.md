@@ -2,7 +2,7 @@
 
 Боты для Инстаграмма
 
--What we have:
+<p>-What we have:<p>
 -publish post
 -like
 #like
