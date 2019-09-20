@@ -3,14 +3,14 @@
 Боты для Инстаграмма
 
 What we have:
--publish post
--like
--#like
--comment
--change avatar
--subscribe
--unsubscribe
--send message
+publish post
+like
+#like
+comment
+change avatar
+subscribe
+unsubscribe
+send message
 
 What we need:
 -Autotests:
