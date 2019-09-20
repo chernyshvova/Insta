@@ -2,7 +2,7 @@
 
 Боты для Инстаграмма
 
-What we have:\t
+What we have:
 publish post
 like
 #like
