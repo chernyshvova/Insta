@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstarmConsole", "InstarmConsole\InstarmConsole.csproj", "{9C11F901-4B2F-4730-BDD7-8781F961B105}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C11F901-4B2F-4730-BDD7-8781F961B105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C11F901-4B2F-4730-BDD7-8781F961B105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C11F901-4B2F-4730-BDD7-8781F961B105}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C11F901-4B2F-4730-BDD7-8781F961B105}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {488212B3-8E67-4AF1-8DD1-CA0913F29837}
+	EndGlobalSection
+EndGlobal
