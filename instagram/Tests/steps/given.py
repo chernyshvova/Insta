@@ -1,5 +1,5 @@
+from commons.account import Account
 
-
-@given(u'account with tag general')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Given account with tag general')
+@given(u'account with tag {tag}')
+def step_impl(context, tag):
+    context.account = Account(tag, "config.json")

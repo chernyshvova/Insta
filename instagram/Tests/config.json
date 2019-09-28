@@ -1,14 +1,25 @@
 {
 "accounts":[
     {
-        "login" : "test@gmail.com",
-        "password" : "password",
-        "keys" : [
-            "general",
-            "ru"
-        ]
+        "login" : "fogger1875@seznam.cz",
+        "password" : "260d14ee02b9ef20d53edc6ed8afb71014b7e0aac3eda92233379eb1551577d4",
+        "tag" : "empty"
+    },
+    {
+        "login": "invalid@gmail.com",
+        "password": "invalid",
+        "tag" : "invalid"
+    },
+    {
+        "login": "chernyshvova2@gmail.com",
+        "password": "BamBam753951",
+        "tag" : "gmail"
+    },
+    {
+        "login": "chernyshvova@XXXXX.com",
+        "password": "",
+        "tag" : "invalid provider"
     }
-
     
 ]
 }
