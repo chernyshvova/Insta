@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Export.cs" />
+    <Compile Include="MailAgent\CustomException.cs" />
     <Compile Include="MailAgent\IMessageParser.cs" />
     <Compile Include="MailAgent\InstagrammVerifyParser.cs" />
     <Compile Include="MailAgent\MailAgent.cs" />

@@ -30,7 +30,15 @@ namespace mail
         public string ParseMessage(string subj, string sender, DateTime dateFrom, IMessageParser parser)
         {
             SearchCondition condition = new SearchCondition();
-            condition.Value = string.Format(@"X-GM-RAW ""AFTER:{0:yyyy-MM-dd}""", dateFrom);
+            if (this.m_host == "gmail.com")
+            {
+                condition.Value = string.Format(@"X-GM-RAW ""AFTER:{0:yyyy-MM-dd}""", dateFrom);
+            }
+            else
+            {
+                condition = SearchCondition.Undeleted();
+            }
+            
             var msgs = m_client.SearchMessages(condition);
 
             List<Lazy<MailMessage>> resultMessages = new List<Lazy<MailMessage>>();
@@ -48,7 +56,7 @@ namespace mail
 
             if(resultMessages.Count == 0)
             {
-                throw new Exception("message is not found");
+                throw new CommonTools.MailAgent.CustomException(1);//E_DATA_NOT_FOUND
             }
 
             return parser.Parse(resultMessages[resultMessages.Count].Value.Body);
@@ -62,8 +70,11 @@ namespace mail
                 case "gmail.com":
                     this.SetParsedData(993, true, "imap.gmail.com");
                     break;
+                case "seznam.cz":
+                    this.SetParsedData(993, true, "imap.seznam.cz");
+                    break;
                 default:
-                    throw new Exception("Unknown parsed host");
+                    throw new CommonTools.MailAgent.CustomException(2); //2 = MAIL_PROVIDER_NOT_FOUND
             }
         }
 

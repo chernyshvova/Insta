@@ -10,22 +10,54 @@ namespace CommonTools
 {
         public class PyWrapper : DynamicObject
         {
-
+            public bool enable = true;
             // wrapped C# class
             private mail.MailAgent functions;
 
             // ctor
-            public PyWrapper()
+            public PyWrapper(string login, string password)
             {
-                functions = new mail.MailAgent("chernyshvova@gmail.com", "BamBam753951");
-            }
 
-            public string ParseMessage()
+                try
+                {
+                    functions = new mail.MailAgent(login, password);
+                }
+                catch
+                {
+                    enable = false;
+                    //error handle
+                }
+                
+            }
+            
+            public int ParseALLMessage(string subject, string sender, out string result)
             {
-                DateTime messageTime = new DateTime(2000, 1, 1);
-                var code = functions.ParseMessage("Подтвердите свой аккаунт", "security@mail.instagram.com", messageTime, new InstagrammVerifyParser());
-                return code;
+                result = "";
+                if(!enable)
+                {
+                    return 3;//E_INVALID_EMAIL
+                }
+                try
+                {
+                    DateTime messageTime = new DateTime(2019, 9, 28);
+                    result = functions.ParseMessage(subject, sender, messageTime, new InstagrammVerifyParser());
+                }
+                catch(MailAgent.CustomException ex)
+                {
+                    return ex.m_code;
+                }
+                catch(Exception ex)
+                {
+                string err = ex.ToString();
+                    //something wrong
+                    return 99;
+                }
+            
+
+                return 0; // 0 = S_OK
             }
 
         }
+
+
 }
