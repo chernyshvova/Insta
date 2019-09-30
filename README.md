@@ -23,5 +23,6 @@
 * send message to user
 
 # Инфраструктура
-[Основной проект на гитхабе](https://github.com/chernyshvova/Insta.git)
+[Основной проект на гитхабе](https://github.com/chernyshvova/Insta.git).
+
 [Командные утеля](https://github.com/chernyshvova/TeamUtils)
