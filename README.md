@@ -1,30 +1,27 @@
-# Insta
-
+# Инстаграмм
 Боты для Инстаграмма
 
-<p>-What we have:<p>
-<p>-publish post<p>
-<p>-like<p>
-<p>#like<p>
-<p>comment<p>
-<p>change avatar<p>
-<p>subscribe<p>
-<p>unsubscribe<p>
-<p>send message<p>
+# Описание:
+Цель проекта это массовое управление ботами в инстеграмме.
 
-<p>What we need:<p>
-<p>-Autotests:<p>
-<p>https://github.com/chernyshvova/Insta/issues/16<p>
-<p>https://github.com/chernyshvova/Insta/issues/15<p>
+# Требования
+-Возможость управлять большим кол-вом аккаунтов(1000)
+-Все данные, необходимые для работы должны храниться в отедльной базе
+-На момент использования все данные в базе должны быть валидными(невалидные должны быть отмечены соответствующим статусом)
+-Управление командами должно осуществляться через GUI + при вызове DLL
+-Вся логика связанная с управлением должна быть в dll
 
-<p>-Manual testing all functional<p>
-<p>-Instagramm game rules - https://github.com/chernyshvova/Insta/issues/17<p>
+# Что сделано
 
-<p>Plans:<p>
-<p>Сейчас для нас преоритет это закрепиться<p>
-<p>Нужно:<p>
-<p>-Создать тестовые данные для автотестов и ручного тестирования(почты,инстаграмм аккаунты, тулзу что бы забивать прокси в аккаунты)<p>
-<p>-покрыть весь функционал автотестами<p>
-<p>-Протестировать вручную хотя бы десяток аккаунтов<p>
-<p>-Исправить все встречающиеся баги<p>
-<p>-Создать функционал для исключений что бы детектить поведение программы<p>
+* publish post
+* like post
+* like post of #
+* comment post
+* change avatar
+* subscribe to user
+* unsubscribe
+* send message to user
+
+# Инфраструктура
+[Основной проект на гитхабе](https://github.com/chernyshvova/Insta.git)
+[Командные утеля](https://github.com/chernyshvova/TeamUtils)
