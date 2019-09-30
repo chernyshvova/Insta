@@ -16,8 +16,8 @@ namespace InstarmConsole
                 cmd.WriteHelp();
             }
             if (args.Length != 0)
-            {
-                RunAsync(args);
+            { 
+                 RunAsync(args);
             }
             Console.ReadKey();
         }
@@ -32,6 +32,8 @@ namespace InstarmConsole
             }
             catch (Exception ex)
             {
+                var state = InstarmCore.Utils.ExeptionUtils.GetState();
+                string err = InstarmCore.Utils.ExeptionUtils.ErrorMessage;
                 Console.WriteLine("Error!:  " + ex);
             }
         }

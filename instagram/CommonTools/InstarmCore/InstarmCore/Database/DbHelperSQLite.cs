@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InstarmCore.Utils;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
@@ -23,8 +24,10 @@ namespace InstarmCore.Database
                 }
             catch (SQLiteException ex)
             {
-                Console.WriteLine("Can`t connect to database");
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(Utils.ErrorsContract.DB_CONNECT);
+                Console.WriteLine(ErrorsContract.DB_CONNECT + ex.Message);
+                ExeptionUtils.SetState(Error.E_DB_CONNECTION, ex.Message);
+                throw ex;
             }
 
             if (sqlConnection.State == ConnectionState.Open)
@@ -42,7 +45,8 @@ namespace InstarmCore.Database
             var data = DoTask(DbContract.SELECTPROFILE + " where " + DbContract.TAG + "='" + tag + "';");
             if (!data.HasRows)
             {
-                System.ArgumentException argEx = new System.ArgumentException("Can`t find any data by tag in database");
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.DB_FIND);
+                ExeptionUtils.SetState(Error.E_DB_DATA_NOT_FOUND, ErrorsContract.DB_FIND);
                 throw argEx;
             }
             while (data.Read())
@@ -61,8 +65,9 @@ namespace InstarmCore.Database
             var data = DoTask(DbContract.SELECTPROFILE + " where " + DbContract.USERNAME + "='" + name + "';");
             if (!data.HasRows)
             {
-                Console.WriteLine("Can`t find any data by profilename in database");
-                System.ArgumentException argEx = new System.ArgumentException("Can`t find any data by profilename in database");
+                Console.WriteLine(ErrorsContract.DB_FIND);
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.DB_FIND);
+                ExeptionUtils.SetState(Error.E_DB_DATA_NOT_FOUND, ErrorsContract.DB_FIND);
                 throw argEx;
             }
             if (data.Read())
@@ -73,9 +78,11 @@ namespace InstarmCore.Database
             }
             else
             {
-                Console.WriteLine("Error while reading data from db");
+                Console.WriteLine(ErrorsContract.DB_READ);
                 Close();
-                return profile;
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.DB_READ);
+                ExeptionUtils.SetState(Error.E_DB_READING, ErrorsContract.DB_READ);
+                throw argEx; 
             }
         }
 
@@ -100,7 +107,9 @@ namespace InstarmCore.Database
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error while inserting data from db: " + ex);
+                    Console.WriteLine(ErrorsContract.DB_READ + ex);
+                    ExeptionUtils.SetState(Error.E_DB_WRITING, ErrorsContract.DB_READ + ex);
+                    throw ex;
                 }
                 
             }
@@ -146,9 +155,19 @@ namespace InstarmCore.Database
 
         private SQLiteDataReader DoTask(string sqlCommandText)
         {
-            SQLiteCommand cmd = sqlConnection.CreateCommand();
-            cmd.CommandText = sqlCommandText;
-            return cmd.ExecuteReader();
+            try
+            {
+                SQLiteCommand cmd = sqlConnection.CreateCommand();
+                cmd.CommandText = sqlCommandText;
+                return cmd.ExecuteReader();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ErrorsContract.DB_EXECUTE + ex);
+                ExeptionUtils.SetState(Error.E_DB_WRITING, ErrorsContract.DB_EXECUTE + ex);
+                throw ex;
+            }
+
         }
 
         public void CreateTables() {
@@ -166,10 +185,11 @@ namespace InstarmCore.Database
                 cmd.ExecuteNonQuery();
                 Close();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine("Error while creating tables in db");
-                throw;
+                Console.WriteLine(ErrorsContract.DB_CREATE + ex);
+                ExeptionUtils.SetState(Error.E_DB_CREATING, ErrorsContract.DB_CREATE + ex);
+                throw ex;
             }
           
         }

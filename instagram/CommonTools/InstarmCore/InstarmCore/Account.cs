@@ -11,10 +11,11 @@ using InstagramApiSharp;
 using System.Linq;
 using InstagramApiSharp.Classes.SessionHandlers;
 using System.Text.RegularExpressions;
+using InstarmCore.Utils;
 
 namespace InstarmCore
 {
-    internal class Account : IAccount
+    public class Account : IAccount
     {
         private readonly IInstaApi InstaApi;
         private readonly UserSessionData userSession;
@@ -64,6 +65,38 @@ namespace InstarmCore
                 else
                 {
                     var currentUser = await InstaApi.LoginAsync();
+                    
+                    if (currentUser.Succeeded)
+                    {
+                        SaveSession();
+                    }
+                    else
+                    {
+                        ExeptionUtils.SetState(Error.E_ACC_SIGNIN, ErrorsContract.ACC_SIGNIN);
+                        await GetChallenge();
+                        System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_SIGNIN);
+                        throw argEx;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var currentUser = await InstaApi.LoginAsync();
+                if (!currentUser.Succeeded)
+                {
+                    Console.WriteLine(ex);
+                    ExeptionUtils.SetState(Error.E_ACC_SIGNIN, ErrorsContract.ACC_SIGNIN);
+                    throw ex;
+                }
+                ExeptionUtils.SetState(Error.S_OK);
+                SaveSession();               
+            }
+            if (File.Exists(relatedPath))
+            {
+                LoadSession();
+                if (!InstaApi.IsUserAuthenticated)
+                {
+                    var currentUser = await InstaApi.LoginAsync();
                     if (currentUser.Succeeded)
                     {
                         SaveSession();
@@ -72,33 +105,18 @@ namespace InstarmCore
                     {
                         await GetChallenge();
                         SaveSession();
+                        LoadSession();
+                        ExeptionUtils.SetState(Error.E_ACC_SIGNIN);
                     }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-            LoadSession();
-            if (!InstaApi.IsUserAuthenticated)
-            {
-                var currentUser = await InstaApi.LoginAsync();              
-                if (currentUser.Succeeded)
-                {
-                    SaveSession();
                 }
                 else
                 {
-                    await GetChallenge();
-                    SaveSession();
-                    LoadSession();
-                }   
+                    ExeptionUtils.SetState(Error.S_OK);
+                    Console.WriteLine("Session loaded!");
+                }
+
             }
-            else
-            {
-                Console.WriteLine("Session loaded!");
-            }
+              
         }
 
         /// <summary>
@@ -109,6 +127,7 @@ namespace InstarmCore
         {
             var picturePath = Environment.CurrentDirectory + PathContract.pathAvatar + imgName;
             await ChangeAvatarAsync(picturePath);
+ 
         }
         public async Task ChangeAvatarPath(string path)
         {
@@ -129,19 +148,29 @@ namespace InstarmCore
                         Console.WriteLine("New profile picture: " + result.Value.ProfilePicUrl);
                     }
                     else
-                        Console.WriteLine("Error while changing profile picture: " + result.Info.Message);
+                    {
+                        Console.WriteLine(ErrorsContract.ACC_AVATAR + result.Info.Message);
+                        System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_AVATAR + result.Info.Message);
+                        throw argEx;
+                    }
+                        
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Error: No access to image");
+                    Console.WriteLine(ErrorsContract.ACC_AVATAR_2 + ex);
+                    ExeptionUtils.SetState(Error.E_ACC_AVATAR, ErrorsContract.ACC_AVATAR_2 + ex);
+                    throw ex;
                 }
             }
             else
             {
                 DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + PathContract.pathAvatar);
                 dirInfo.Create();
-                Console.WriteLine("File not found : " + path);
+                Console.WriteLine(ErrorsContract.ACC_NOTFOUND + path);
                 Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathAvatar);
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_NOTFOUND + path);
+                ExeptionUtils.SetState(Error.E_ACC_AVATAR, ErrorsContract.ACC_NOTFOUND + path);
+                throw argEx;
             }
         }
         private string GetIdFromUri(string mediaUrl)
@@ -154,7 +183,8 @@ namespace InstarmCore
             }
             else
             {
-                System.ArgumentException argEx = new System.ArgumentException("Cant get mediaID, check url");
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_MEDIA);
+                ExeptionUtils.SetState(Error.E_ACC_MEDIA_URL, ErrorsContract.ACC_MEDIA);
                 throw argEx;
             }
 
@@ -164,7 +194,9 @@ namespace InstarmCore
             var mediaId = await InstaApi.MediaProcessor.GetMediaIdFromUrlAsync(new Uri(mediaUrl));
             if (!mediaId.Succeeded)
             {
-                return null;
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_MEDIA_URL);
+                ExeptionUtils.SetState(Error.E_ACC_MEDIA_URL, ErrorsContract.ACC_MEDIA_URL);
+                throw argEx;
             }        
             return mediaId.Value.ToString();
         }
@@ -205,6 +237,13 @@ namespace InstarmCore
                     Y = 0.5
                 }); */
                 var result = await InstaApi.MediaProcessor.UploadPhotoAsync(mediaImage, message);
+                if (!result.Succeeded)
+                {
+                    System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_POST + result.Info.Message);
+                    ExeptionUtils.SetState(Error.E_ACC_SETPOST, ErrorsContract.ACC_POST + result.Info.Message);
+                    throw argEx;
+                }
+
                 Console.WriteLine(result.Succeeded
                     ? $"Media created: {result.Value.Pk}, {result.Value.Caption}"
                     : $"Unable to upload photo: {result.Info.Message}");
@@ -213,8 +252,11 @@ namespace InstarmCore
             {
                 DirectoryInfo dirInfo = new DirectoryInfo(Environment.CurrentDirectory + PathContract.pathImg);
                 dirInfo.Create();
-                Console.WriteLine("File not found : " + path);
+                Console.WriteLine(ErrorsContract.ACC_NOTFOUND + path);
                 Console.WriteLine("Add image into next directory: " + Environment.CurrentDirectory + PathContract.pathImg);
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_NOTFOUND + path);
+                ExeptionUtils.SetState(Error.E_ACC_SETPOST, ErrorsContract.ACC_NOTFOUND + path);
+                throw argEx;
             }
         }
 
@@ -227,6 +269,12 @@ namespace InstarmCore
         /// <returns></returns>
         public async Task CommentMedia(string mediaUrl, string message) {
             var commentResult = await InstaApi.CommentProcessor.CommentMediaAsync(GetIdFromUri(mediaUrl), message);
+            if (!commentResult.Succeeded)
+            {
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_COMMENT + commentResult.Info.Message);
+                ExeptionUtils.SetState(Error.E_ACC_COMMENT, ErrorsContract.ACC_COMMENT + commentResult.Info.Message);
+                throw argEx;
+            }
             Console.WriteLine(commentResult.Succeeded
                 ? $"Comment created: {commentResult.Value.Pk}, text: {commentResult.Value.Text}"
                 : $"Unable to create comment: {commentResult.Info.Message}");
@@ -240,6 +288,12 @@ namespace InstarmCore
         public async Task LikeMedia(string mediaUrl)
         {
             var likeResponse = await InstaApi.MediaProcessor.LikeMediaAsync(GetIdFromUri(mediaUrl));
+            if (!likeResponse.Succeeded)
+            {
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_LIKE + likeResponse.Info.Message);
+                ExeptionUtils.SetState(Error.E_ACC_LIKE, ErrorsContract.ACC_LIKE + likeResponse.Info.Message);
+                throw argEx;
+            }
             Console.WriteLine(likeResponse.Succeeded
                 ? $"Liked!: {likeResponse.Value}"
                 : $"Error.Something goes wrong: {likeResponse.Info}");
@@ -255,6 +309,12 @@ namespace InstarmCore
               ? $"Folloved!: {userInfo.Value.Username}"
               : $"Error.Something goes wrong: {followUser.Info}");
             }
+            else
+            {
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_FOLLOW + userInfo.Info.Message);
+                ExeptionUtils.SetState(Error.E_ACC_FOLLOW, ErrorsContract.ACC_FOLLOW + userInfo.Info.Message);
+                throw argEx;
+            }
         }
         public async Task UnFollowUser(string username)
         {
@@ -266,15 +326,33 @@ namespace InstarmCore
                 ? $"Unfolloved: {userInfo.Value.Username}"
 :                $"Error.Something goes wrong: {followUser.Info}");
             }
+            else
+            {
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_FOLLOW + userInfo.Info.Message);
+                ExeptionUtils.SetState(Error.E_ACC_FOLLOW, ErrorsContract.ACC_FOLLOW + userInfo.Info.Message);
+                throw argEx;
+            }
         }
 
         public async Task GetSelfFollowers (int pages)
         {
             var userFollovers = await InstaApi.UserProcessor.GetCurrentUserFollowersAsync(PaginationParameters.MaxPagesToLoad(pages));
+            if (!userFollovers.Succeeded)
+            {
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_GET_FOLLOWERS + userFollovers.Info.Message);
+                ExeptionUtils.SetState(Error.E_ACC_FOLLOW, ErrorsContract.ACC_GET_FOLLOWERS + userFollovers.Info.Message);
+                throw argEx;
+            }
         }
         public async Task GetuserFollowers(string username, int pages)
         {
-                var follovers = await InstaApi.UserProcessor.GetUserFollowersAsync("argylefreeman", PaginationParameters.MaxPagesToLoad(pages));
+            var follovers = await InstaApi.UserProcessor.GetUserFollowersAsync("argylefreeman", PaginationParameters.MaxPagesToLoad(pages));
+            if (!follovers.Succeeded)
+            {
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_GET_FOLLOWERS + follovers.Info.Message);
+                ExeptionUtils.SetState(Error.E_ACC_FOLLOW, ErrorsContract.ACC_GET_FOLLOWERS + follovers.Info.Message);
+                throw argEx;
+            }
         }
 
         public async Task ExploreLikeHashtag(string hashtag, int pages)
@@ -296,15 +374,33 @@ namespace InstarmCore
                     {
                         counter++;
                     }
+                    if (!likeResult.Succeeded)
+                    {
+                        System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_FEED_LIKE + likeResult.Info.Message);
+                        ExeptionUtils.SetState(Error.E_ACC_LIKE, ErrorsContract.ACC_FEED_LIKE + likeResult.Info.Message);
+                        throw argEx;
+                    }
                     Console.WriteLine($"Media {media.Code} {resultString}");
                 }
                 Console.WriteLine("Liked: " + counter + " medias");
+            }
+            else
+            {
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_FEED_TAG + tagFeed.Info.Message);
+                ExeptionUtils.SetState(Error.E_ACC_LIKE, ErrorsContract.ACC_FEED_TAG + tagFeed.Info.Message);
+                throw argEx;
             }
         }
 
         public async Task DirectCheckMessages()
         {
             var inbox = await InstaApi.MessagingProcessor.GetDirectInboxAsync(PaginationParameters.MaxPagesToLoad(5));
+            if (!inbox.Succeeded)
+            {
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_DIRECT_INBOX + inbox.Info.Message);
+                ExeptionUtils.SetState(Error.E_ACC_DIRECT, ErrorsContract.ACC_DIRECT_INBOX + inbox.Info.Message);
+                throw argEx;
+            }
             if (inbox.Value.Inbox.UnseenCount!=0)
             {
                 Console.WriteLine("Unreaded messages: " + inbox.Value.Inbox.UnseenCount);
@@ -342,11 +438,18 @@ namespace InstarmCore
                 var user = await InstaApi.UserProcessor.GetUserAsync(username);
                 var userId = user.Value.Pk.ToString();
                 var directText = await InstaApi.MessagingProcessor.SendDirectTextAsync(userId, null, message);
+                if (!directText.Succeeded)
+                {
+                    System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_DIRECT_SEND + directText.Info.Message);
+                    ExeptionUtils.SetState(Error.E_ACC_DIRECT, ErrorsContract.ACC_DIRECT_SEND + directText.Info.Message);
+                    throw argEx;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine("Error while trying to send message!");
-                throw;
+                Console.WriteLine(ErrorsContract.ACC_DIRECT_SEND_FAIL + ex);
+                ExeptionUtils.SetState(Error.E_ACC_DIRECT, ErrorsContract.ACC_DIRECT_SEND_FAIL + ex);
+                throw ex;
             }
         }
 
@@ -355,20 +458,35 @@ namespace InstarmCore
             try
             {
                 var inbox = await InstaApi.MessagingProcessor.GetDirectInboxAsync(PaginationParameters.MaxPagesToLoad(1));
+                if (!inbox.Succeeded)
+                {
+                    System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_DIRECT_THREADS + inbox.Info.Message);
+                    ExeptionUtils.SetState(Error.E_ACC_DIRECT, ErrorsContract.ACC_DIRECT_THREADS + inbox.Info.Message);
+                    throw argEx;
+                }
                 var desireThread = inbox.Value.Inbox.Threads
                     .Find(u => u.Users.FirstOrDefault().UserName.ToLower() == username);
                 var requestedThreadId = desireThread.ThreadId;
                 var directText = await InstaApi.MessagingProcessor.SendDirectTextAsync(null, requestedThreadId, message);
+                if (!directText.Succeeded)
+                {
+                    System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_DIRECT_SEND + directText.Info.Message);
+                    ExeptionUtils.SetState(Error.E_ACC_DIRECT, ErrorsContract.ACC_DIRECT_SEND + directText.Info.Message);
+                    throw argEx;
+                }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine("Error while trying to send message!");
-                throw;
-            }         
+                Console.WriteLine(ErrorsContract.ACC_DIRECT_SEND_FAIL + ex);
+                ExeptionUtils.SetState(Error.E_ACC_DIRECT, ErrorsContract.ACC_DIRECT_SEND_FAIL + ex);
+                throw ex;
+            }
         }
-
-        private void RunChallenge()
+        
+        //  Deprecated //
+        /*
+        private void RunChallenge() 
         {
             Console.WriteLine("Starting chalange auth...");
             if (proxydata.host!=null)
@@ -404,6 +522,7 @@ namespace InstarmCore
                 return;
             }
         }
+        */
 
         private async Task GetChallenge()
         {
@@ -437,16 +556,28 @@ namespace InstarmCore
                                         await VerifyData();
                                     }
                                     else
-                                        Console.WriteLine(phoneResult.Info.Message, "ERROR");
+                                    {
+                                        Console.WriteLine(ErrorsContract.ACC_CH_PHONE_CONFIRM + phoneResult.Info.Message);
+                                        ExeptionUtils.SetState(Error.E_CHALLENGE, ErrorsContract.ACC_CH_PHONE_CONFIRM + phoneResult.Info.Message);
+                                        System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_CH_PHONE_CONFIRM + phoneResult.Info.Message);
+                                        throw argEx;
+                                    }
+                                        
                                 }
-                                catch (Exception)
+                                catch (Exception ex)
                                 {
-                                    Console.WriteLine("Error while trying get challenge from phone number");
+                                    Console.WriteLine(ErrorsContract.ACC_CH_PHONE_ERROR + ex);
+                                    ExeptionUtils.SetState(Error.E_CHALLENGE, ErrorsContract.ACC_CH_PHONE_ERROR + ex);
                                     throw;
                                 }
                             }
                             else
-                                Console.WriteLine("Error while trying get challenge from phone");
+                            {
+                                Console.WriteLine(ErrorsContract.ACC_CH_PHONE_ERROR + submitPhone.Info.Message);
+                                ExeptionUtils.SetState(Error.E_CHALLENGE, ErrorsContract.ACC_CH_PHONE_ERROR + submitPhone.Info.Message);
+                                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_CH_PHONE_ERROR + submitPhone.Info.Message);
+                                throw argEx;
+                            }
                         }
                         else
                         {
@@ -459,17 +590,28 @@ namespace InstarmCore
                                     await VerifyData();
                                 }
                                 else
-                                    Console.WriteLine("Error while trying get challenge from email");
+                                {
+                                    Console.WriteLine(ErrorsContract.ACC_CH_EMAIL_CONFIRM_CODE + email.Info.Message);
+                                    ExeptionUtils.SetState(Error.E_CHALLENGE, ErrorsContract.ACC_CH_EMAIL_CONFIRM_CODE + email.Info.Message);
+                                    System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_CH_EMAIL_CONFIRM_CODE + email.Info.Message);
+                                    throw argEx;
+                                }
                             }
-                            catch (Exception)
+                            catch (Exception ex)
                             {
-                                Console.WriteLine("Exception while trying get challenge from email");
+                                Console.WriteLine(ErrorsContract.ACC_CH_EMAIL_CONFIRM_EX + ex);
+                                ExeptionUtils.SetState(Error.E_CHALLENGE, ErrorsContract.ACC_CH_EMAIL_CONFIRM_EX + ex);
                                 throw;
                             }                                                 
                         }
                     }
                     else
-                        Console.WriteLine("Error while trying get challenge");
+                    {
+                        Console.WriteLine(ErrorsContract.ACC_CH_EMAIL_CONFIRM_FAIL);
+                        ExeptionUtils.SetState(Error.E_CHALLENGE, ErrorsContract.ACC_CH_EMAIL_CONFIRM_FAIL);
+                        System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_CH_EMAIL_CONFIRM_FAIL);
+                        throw argEx;
+                    }
                 }
                 else if (currentUser.Value == InstaLoginResult.TwoFactorRequired)
                 {
@@ -530,11 +672,20 @@ namespace InstarmCore
                        await TwoFactorAuth();
                     }
                     else
-                        Console.WriteLine(verifyLogin.Info.Message, "ERROR");
+                    {
+                        Console.WriteLine(ErrorsContract.ACC_CH_VERIFY + verifyLogin.Info.Message);
+                        ExeptionUtils.SetState(Error.E_CHALLENGE, ErrorsContract.ACC_CH_VERIFY);
+                        System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_CH_VERIFY);
+                        throw argEx;
+                    }
                 }
 
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message, "Exception"); }
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+                ExeptionUtils.SetState(Error.E_CHALLENGE, ErrorsContract.ACC_CH_VERIFY + ex.Message);
+                throw;
+            }
         }
 
         private async Task TwoFactorAuth()
@@ -553,7 +704,10 @@ namespace InstarmCore
             }
             else
             {
-                Console.WriteLine("Eror while trying to get two factor auth");
+                Console.WriteLine(ErrorsContract.ACC_CH_TWOFACTOR_FAIL);
+                ExeptionUtils.SetState(Error.E_CHALLENGE, ErrorsContract.ACC_CH_TWOFACTOR_FAIL);
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_CH_TWOFACTOR_FAIL);
+                throw argEx;
             }
         }
     }
