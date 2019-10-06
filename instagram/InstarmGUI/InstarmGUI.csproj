@@ -129,15 +129,13 @@
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)InstarmGUI.exe" "$(SolutionDir)Tests\artifacts\InstarmGUI.exe"
-copy "$(TargetDir)InstarmGUI.exe" "$(SolutionDir)Tests\artifacts\InstarmGUI.exe.config"
-
+    <PostBuildEvent>
 if $(ConfigurationName) == Release (
 
 DEL "$(SolutionDir)build" /F /Q /S
 
 IF Not exist  "$(SolutionDir)build"  (
-mkdir  $(SolutionDir)build"
+mkdir  "$(SolutionDir)build"
 )
 
 IF Not exist "$(SolutionDir)build\bin" (
@@ -146,7 +144,7 @@ mkdir "$(SolutionDir)build\bin"
 
 copy  "$(TargetDir)instagram.db" "$(SolutionDir)build\instagram.db"
 
-xcopy "$(SolutionDir)\bin\release  "$(SolutionDir)build\bin" /E
+xcopy "$(SolutionDir)\bin\release"  "$(SolutionDir)build\bin" /E
 )ELSE (
 echo 
 )</PostBuildEvent>
