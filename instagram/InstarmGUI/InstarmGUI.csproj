@@ -142,9 +142,7 @@ IF Not exist "$(SolutionDir)build\bin" (
 mkdir "$(SolutionDir)build\bin"
 )
 
-copy  "$(TargetDir)instagram.db" "$(SolutionDir)build\instagram.db"
-
-xcopy "$(SolutionDir)\bin\release"  "$(SolutionDir)build\bin" /E
+xcopy "$(SolutionDir)bin\Release"  "$(SolutionDir)build\bin" /E
 )ELSE (
 echo 
 )</PostBuildEvent>
