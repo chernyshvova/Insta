@@ -8,7 +8,7 @@ using InstarmCore;
 
 namespace InstarmCore.Utils
 {
-    class PythonWrapper : DynamicObject
+    public class PythonWrapper : DynamicObject
     {
 
         public int getAccount(string accountName, out string result)
