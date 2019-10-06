@@ -3,15 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "instarm", "instarm\instarm.csproj", "{17A568FC-D58E-4DEE-8657-912BFCB5BF96}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTools", "CommonTools\CommonTools.csproj", "{75D6C37B-F89E-4CDA-9CB3-87DA2E110B81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstarmGUI", "InstarmGUI\InstarmGUI.csproj", "{2B45278F-9B70-49B7-A507-28DD6A7810D5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E431625B-A1AA-418B-BE71-A640CFE2FBB0} = {E431625B-A1AA-418B-BE71-A640CFE2FBB0}
-		{17A568FC-D58E-4DEE-8657-912BFCB5BF96} = {17A568FC-D58E-4DEE-8657-912BFCB5BF96}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstarmConsole", "InstarmConsole\InstarmConsole.csproj", "{9C11F901-4B2F-4730-BDD7-8781F961B105}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -26,10 +20,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{17A568FC-D58E-4DEE-8657-912BFCB5BF96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17A568FC-D58E-4DEE-8657-912BFCB5BF96}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17A568FC-D58E-4DEE-8657-912BFCB5BF96}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17A568FC-D58E-4DEE-8657-912BFCB5BF96}.Release|Any CPU.Build.0 = Release|Any CPU
 		{75D6C37B-F89E-4CDA-9CB3-87DA2E110B81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{75D6C37B-F89E-4CDA-9CB3-87DA2E110B81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75D6C37B-F89E-4CDA-9CB3-87DA2E110B81}.Release|Any CPU.ActiveCfg = Release|Any CPU

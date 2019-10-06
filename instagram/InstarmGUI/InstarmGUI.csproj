@@ -146,8 +146,6 @@ mkdir $(SolutionDir)build\bin"
 
 copy  $(TargetDir)instagram.db $(SolutionDir)build\instagram.db
 
-echo $(TargetDir)
-echo   $(SolutionDir)build\bin
 xcopy $(SolutionDir)\bin\release  "$(SolutionDir)build\bin" /E
 )ELSE (
 echo 
