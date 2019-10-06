@@ -4,9 +4,9 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InstarmCore.Utils;
+using InstarmCore;
 
-namespace InstarmCore
+namespace InstarmCore.Utils
 {
     class PythonWrapper : DynamicObject
     {
@@ -14,7 +14,8 @@ namespace InstarmCore
         public int getAccount(string accountName, out string result)
         {
             result = "";
-            AccountManager mg = new AccountManager(); try
+            AccountManager mg = new AccountManager();
+            try
             {
                 Account acc = mg.getAccount(accountName);
             }
