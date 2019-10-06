@@ -74,11 +74,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)AE.Net.Mail.dll $(SolutionDir)Tests\artifacts\AE.Net.Mail.dll
-copy $(TargetDir)CommonTools.dll $(SolutionDir)Tests\artifacts\CommonTools.dll
-copy $(TargetDir)Microsoft.Dynamic.dll $(SolutionDir)Tests\artifacts\Microsoft.Dynamic.dll
-copy $(TargetDir)System.Runtime.CompilerServices.Unsafe.dll $(SolutionDir)Tests\artifacts\System.Runtime.CompilerServices.Unsafe.dll
-copy $(TargetDir)System.Text.Encoding.CodePages.dll $(SolutionDir)Tests\artifacts\System.Text.Encoding.CodePages.dll</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)AE.Net.Mail.dll" "$(SolutionDir)Tests\artifacts\AE.Net.Mail.dll"
+copy "$(TargetDir)CommonTools.dll" "$(SolutionDir)Tests\artifacts\CommonTools.dll"
+copy "$(TargetDir)Microsoft.Dynamic.dll" "$(SolutionDir)Tests\artifacts\Microsoft.Dynamic.dll"
+copy "$(TargetDir)System.Runtime.CompilerServices.Unsafe.dll" "$(SolutionDir)Tests\artifacts\System.Runtime.CompilerServices.Unsafe.dll"
+copy "$(TargetDir)System.Text.Encoding.CodePages.dll" "$(SolutionDir)Tests\artifacts\System.Text.Encoding.CodePages.dll"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

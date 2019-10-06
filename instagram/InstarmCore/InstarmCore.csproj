@@ -105,8 +105,7 @@
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>echo copy InstarmCore.dll
-copy $(TargetDir)InstarmCore.dll $(SolutionDir)Tests\artifacts\InstarmCore.dll
-echo InstarmCore.dll is copied</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)InstarmCore.dll" "$(SolutionDir)Tests\artifacts\InstarmCore.dll"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
