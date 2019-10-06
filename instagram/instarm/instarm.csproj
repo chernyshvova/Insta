@@ -35,7 +35,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>$(SolutionDir)bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -44,7 +44,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>$(SolutionDir)bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -143,7 +143,9 @@
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>DEL $(SolutionDir)build /F /Q /S
+    <PostBuildEvent>if $(ConfigurationName) == Release (
+
+DEL $(SolutionDir)build /F /Q /S
 
 IF Not exist  $(SolutionDir)build  (
 mkdir  $(SolutionDir)build"
@@ -153,9 +155,14 @@ IF Not exist $(SolutionDir)build\bin (
 mkdir $(SolutionDir)build\bin"
 )
 
-copy $(SolutionDir)instarm\bin\Release\instagram.db $(SolutionDir)build\instagram.db
+copy  $(TargetDir)instagram.db $(SolutionDir)build\instagram.db
 
-xcopy $(SolutionDir)instarm\bin\Release $(SolutionDir)build\bin /E</PostBuildEvent>
+echo $(TargetDir)
+echo   $(SolutionDir)build\bin
+xcopy $(SolutionDir)\bin\release  "$(SolutionDir)build\bin" /E
+)ELSE (
+echo 
+)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
