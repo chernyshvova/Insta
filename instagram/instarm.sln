@@ -11,6 +11,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTools", "CommonTools\CommonTools.csproj", "{75D6C37B-F89E-4CDA-9CB3-87DA2E110B81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstarmGUI", "InstarmGUI\InstarmGUI.csproj", "{2B45278F-9B70-49B7-A507-28DD6A7810D5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{17A568FC-D58E-4DEE-8657-912BFCB5BF96} = {17A568FC-D58E-4DEE-8657-912BFCB5BF96}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstarmConsole", "InstarmConsole\InstarmConsole.csproj", "{9C11F901-4B2F-4730-BDD7-8781F961B105}"
 	ProjectSection(ProjectDependencies) = postProject
