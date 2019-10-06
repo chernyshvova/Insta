@@ -10,7 +10,17 @@ namespace InstarmCore.Utils
     {
         public static Error currentState = Error.S_OK;
 
-        public static string ErrorMessage { get; set; }
+        private static string errMessage = "";
+        public static string ErrorMessage
+        {   get
+            {
+                return errMessage;
+            }
+            set
+            {
+                errMessage = value;
+            }
+        }
 
         public static void SetState(Error state)
         {

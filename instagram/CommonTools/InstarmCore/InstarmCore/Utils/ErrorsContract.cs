@@ -36,13 +36,15 @@ namespace InstarmCore.Utils
         public const string ACC_DIRECT_SEND_FAIL = "Error while trying to send message ";
 
         public const string ACC_CH_PHONE_CONFIRM = "Error confirming phone ";
-        public const string ACC_CH_PHONE_ERROR  = "Error while trying get challenge from phone number ";
-        
+        public const string ACC_CH_PHONE_ERROR = "Error while trying get challenge from phone number ";
+
         public const string ACC_CH_EMAIL_CONFIRM_CODE = "Error while trying to send verify code to email ";
         public const string ACC_CH_EMAIL_CONFIRM_EX = "Exception while trying get challenge from email ";
         public const string ACC_CH_EMAIL_CONFIRM_FAIL = "Error Challenge isnt succeed.. ";
         public const string ACC_CH_VERIFY = "Fail to verify login ";
         public const string ACC_CH_TWOFACTOR_FAIL = "Error while trying to get two factor auth ";
-        
+
+        public const string ACC_NAME = "Account name is null or empty";
+        public const string ACC_PASSWORD = "Account password is null or empty";
     }
 }

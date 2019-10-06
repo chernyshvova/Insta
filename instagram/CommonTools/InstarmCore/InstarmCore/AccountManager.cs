@@ -3,7 +3,7 @@ using InstarmCore.Database;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using InstarmCore.Utils;
 namespace InstarmCore
 {
     public class AccountManager
@@ -16,100 +16,226 @@ namespace InstarmCore
 
         public async Task SetPostByTag(string tag, string imgName, string message)
         {
-            SetAccounts(tag);
+            try
+            {
+
+                SetAccounts(tag);
+            }
+            catch (Exception)
+            {
+                
+            }
             foreach (var account in accounts)
             {
-                await account.SignIn();
-                await account.SetPost(imgName, message);
+                try
+                {
+                    await account.SignIn();
+                    await account.SetPost(imgName, message);
+                }
+                catch (Exception)
+                {
+                   
+                }
+               
             }
         }
         public async Task SetPostSingle(string accountName, string imgName, string message)
         {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.SetPost(imgName, message);
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.SetPost(imgName, message);
+            }
+            catch (Exception)
+            {
+                
+            }
+           
         }
         public async Task SetPostSinglePath(string accountName, string path, string message)
         {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.SetPostByPath(path, message);
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.SetPostByPath(path, message);
+            }
+            catch (Exception)
+            {
+                
+            }
+         
         }
 
         public async Task LikeMediaByTag(string tag, string mediaUrl)
         {
-            SetAccounts(tag);
+            try
+            {
+                SetAccounts(tag);
+            }
+            catch (Exception)
+            {
+                
+            }
+            
             foreach (var account in accounts)
             {
-                await account.SignIn();
-                await account.LikeMedia(mediaUrl);
+                try
+                {
+                    await account.SignIn();
+                    await account.LikeMedia(mediaUrl);
+                }
+                catch (Exception)
+                {
+                   
+                }
+               
             }
         }
         public async Task LikeMediaSingle(string accountName, string mediaUrl)
         {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.LikeMedia(mediaUrl);         
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.LikeMedia(mediaUrl);
+            }
+            catch (Exception)
+            {
+                
+            }
+   
         }
 
         public async Task ExploreLikeHashtag(string accountName, string hashtag, string pages)
         {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.ExploreLikeHashtag(hashtag, int.Parse(pages));          
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.ExploreLikeHashtag(hashtag, int.Parse(pages));
+            }
+            catch (Exception)
+            {
+                
+            }
+            
         }
-        public async Task FollowUser(string accountName, string username) {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.FollowUser(username);       
+        public async Task FollowUser(string accountName, string username)
+        {
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.FollowUser(username);
+            }
+            catch (Exception)
+            {
+               
+            }
+           
         }
         public async Task UnFollowUser(string accountName, string username)
         {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.UnFollowUser(username);
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.UnFollowUser(username);
+            }
+            catch (Exception)
+            {
+            }
+          
         }
 
 
         public async Task DirectCheckMessages(string accountName)
         {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.DirectCheckMessages();
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.DirectCheckMessages();
+            }
+            catch (Exception)
+            {
+
+            }
+
         }
         public async Task DirectSendMessage(string accountName, string username, string message)
         {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.DirectSendMessage(username, message);
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.DirectSendMessage(username, message);
+            }
+            catch (Exception)
+            {
+            }
+          
         }
 
         public async Task DirectAnswerMessage(string accountName, string username, string message)
         {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.DirectAnswerMessage(username, message);
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.DirectAnswerMessage(username, message);
+            }
+            catch (Exception)
+            {
+            }
+           
         }
 
 
         public async Task CommentMedia(string accountName, string mediaUrl, string message)
         {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.CommentMedia(mediaUrl, message);
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.CommentMedia(mediaUrl, message);
+            }
+            catch (Exception)
+            {
+               
+            }
+           
         }
 
         public async Task ChangeAvatar(string accountName, string imgName)
         {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.ChangeAvatar(imgName);
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.ChangeAvatar(imgName);
+            }
+            catch (Exception)
+            {
+            
+            }
+          
         }
         public async Task ChangeAvatarPath(string accountName, string path)
         {
-            Account account = getAccount(accountName);
-            await account.SignIn();
-            await account.ChangeAvatarPath(path);
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+                await account.ChangeAvatarPath(path);
+            }
+            catch (Exception)
+            {
+               
+            }
+           
         }
 
         private void SetAccounts(string tag)
@@ -138,10 +264,28 @@ namespace InstarmCore
             }
         }
 
-        private Account getAccount(string accountName)
+        public Account getAccount(string accountName)
         {
+            if (string.IsNullOrEmpty(accountName))
+            {
+                ExeptionUtils.SetState(Error.E_DATA_NOT_FOUND, ErrorsContract.ACC_NAME);
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_NAME);
+                throw argEx;
+            }
             Profile profile = new Profile();
             profile = dbhelper.GetProfileByName(accountName);
+            if (string.IsNullOrEmpty(profile.name))
+            {
+                ExeptionUtils.SetState(Error.E_DATA_NOT_FOUND, ErrorsContract.ACC_NAME);
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_NAME);
+                throw argEx;
+            }
+            if (string.IsNullOrEmpty(profile.password))
+            {
+                ExeptionUtils.SetState(Error.E_DATA_NOT_FOUND, ErrorsContract.ACC_PASSWORD);
+                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_PASSWORD);
+                throw argEx;
+            }
             UserSessionData userSession = new UserSessionData
             {
                 UserName = profile.name,
