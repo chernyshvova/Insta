@@ -74,6 +74,30 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(SolutionDir)Scripts\CommonTools_postBuilder.bat"</PostBuildEvent>
+    <PostBuildEvent>echo "--------------------------------------------------------------"
+echo copy AE.Net.Mail.dll .....
+copy $(ProjectDir)$(OutDir)AE.Net.Mail.dll $(SolutionDir)Tests\artifacts\AE.Net.Mail.dll
+echo AE.Net.Mail.dll is copied
+
+echo copy \CommonTools.dll .....
+copy $(ProjectDir)$(OutDir)CommonTools.dll $(SolutionDir)Tests\artifacts\CommonTools.dll
+echo CommonTools.dll is copied
+
+echo copy \Microsoft.Dynamic.dll .....
+copy $(ProjectDir)$(OutDir)Microsoft.Dynamic.dll $(SolutionDir)Tests\artifacts\Microsoft.Dynamic.dll
+echo Microsoft.Dynamic.dll is copied
+
+echo copy Microsoft.Dynamic.dll .....
+copy $(ProjectDir)$(OutDir)System.Runtime.CompilerServices.Unsafe.dll $(SolutionDir)Tests\artifacts\System.Runtime.CompilerServices.Unsafe.dll
+echo Microsoft.Dynamic.dll is copied
+
+echo copy Microsoft.Dynamic.dll .....
+copy $(ProjectDir)$(OutDir)System.Text.Encoding.CodePages.dll $(SolutionDir)Tests\artifacts\System.Text.Encoding.CodePages.dll
+echo System.Text.Encoding.CodePages.dll is copied
+echo "--------------------------------------------------------------"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>
