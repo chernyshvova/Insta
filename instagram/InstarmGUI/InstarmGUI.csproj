@@ -130,6 +130,27 @@
   </Target>
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)InstarmGUI.exe $(SolutionDir)Tests\artifacts\InstarmGUI.exe
-copy $(TargetDir)InstarmGUI.exe $(SolutionDir)Tests\artifacts\InstarmGUI.exe.config</PostBuildEvent>
+copy $(TargetDir)InstarmGUI.exe $(SolutionDir)Tests\artifacts\InstarmGUI.exe.config
+
+if $(ConfigurationName) == Release (
+
+DEL $(SolutionDir)build /F /Q /S
+
+IF Not exist  $(SolutionDir)build  (
+mkdir  $(SolutionDir)build"
+)
+
+IF Not exist $(SolutionDir)build\bin (
+mkdir $(SolutionDir)build\bin"
+)
+
+copy  $(TargetDir)instagram.db $(SolutionDir)build\instagram.db
+
+echo $(TargetDir)
+echo   $(SolutionDir)build\bin
+xcopy $(SolutionDir)\bin\release  "$(SolutionDir)build\bin" /E
+)ELSE (
+echo 
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>

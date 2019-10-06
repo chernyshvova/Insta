@@ -143,26 +143,8 @@
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Release (
-
-DEL $(SolutionDir)build /F /Q /S
-
-IF Not exist  $(SolutionDir)build  (
-mkdir  $(SolutionDir)build"
-)
-
-IF Not exist $(SolutionDir)build\bin (
-mkdir $(SolutionDir)build\bin"
-)
-
-copy  $(TargetDir)instagram.db $(SolutionDir)build\instagram.db
-
-echo $(TargetDir)
-echo   $(SolutionDir)build\bin
-xcopy $(SolutionDir)\bin\release  "$(SolutionDir)build\bin" /E
-)ELSE (
-echo 
-)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

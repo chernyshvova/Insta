@@ -4,14 +4,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "instarm", "instarm\instarm.csproj", "{17A568FC-D58E-4DEE-8657-912BFCB5BF96}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E431625B-A1AA-418B-BE71-A640CFE2FBB0} = {E431625B-A1AA-418B-BE71-A640CFE2FBB0}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTools", "CommonTools\CommonTools.csproj", "{75D6C37B-F89E-4CDA-9CB3-87DA2E110B81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstarmGUI", "InstarmGUI\InstarmGUI.csproj", "{2B45278F-9B70-49B7-A507-28DD6A7810D5}"
 	ProjectSection(ProjectDependencies) = postProject
+		{E431625B-A1AA-418B-BE71-A640CFE2FBB0} = {E431625B-A1AA-418B-BE71-A640CFE2FBB0}
 		{17A568FC-D58E-4DEE-8657-912BFCB5BF96} = {17A568FC-D58E-4DEE-8657-912BFCB5BF96}
 	EndProjectSection
 EndProject
