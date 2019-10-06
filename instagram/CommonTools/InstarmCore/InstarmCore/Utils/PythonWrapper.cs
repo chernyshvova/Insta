@@ -14,8 +14,16 @@ namespace InstarmCore
         public int getAccount(string accountName, out string result)
         {
             result = "";
-            AccountManager mg = new AccountManager();
-            Account acc = mg.getAccount(accountName);
+            AccountManager mg = new AccountManager(); try
+            {
+                Account acc = mg.getAccount(accountName);
+            }
+            catch (Exception)
+            {
+                result = ExeptionUtils.ErrorMessage;
+                return (int)ExeptionUtils.currentState;
+            }
+           
             result = ExeptionUtils.ErrorMessage;
             return (int)ExeptionUtils.currentState;
         }
