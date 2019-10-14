@@ -26,7 +26,7 @@ namespace InstarmCore.Database
             {
                 Console.WriteLine(Utils.ErrorsContract.DB_CONNECT);
                 Console.WriteLine(ErrorsContract.DB_CONNECT + ex.Message);
-                ExeptionUtils.SetState(Error.E_DB_CONNECTION, ex.Message);
+                ExceptionUtils.SetState(Error.E_DB_CONNECTION, ex.Message);
                 throw ex;
             }
 
@@ -46,7 +46,7 @@ namespace InstarmCore.Database
             if (!data.HasRows)
             {
                 System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.DB_FIND);
-                ExeptionUtils.SetState(Error.E_DB_DATA_NOT_FOUND, ErrorsContract.DB_FIND);
+                ExceptionUtils.SetState(Error.E_DB_DATA_NOT_FOUND, ErrorsContract.DB_FIND);
                 throw argEx;
             }
             while (data.Read())
@@ -67,7 +67,7 @@ namespace InstarmCore.Database
             {
                 Console.WriteLine(ErrorsContract.DB_FIND);
                 System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.DB_FIND);
-                ExeptionUtils.SetState(Error.E_DB_DATA_NOT_FOUND, ErrorsContract.DB_FIND);
+                ExceptionUtils.SetState(Error.E_DB_DATA_NOT_FOUND, ErrorsContract.DB_FIND);
                 throw argEx;
             }
             if (data.Read())
@@ -81,7 +81,7 @@ namespace InstarmCore.Database
                 Console.WriteLine(ErrorsContract.DB_READ);
                 Close();
                 System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.DB_READ);
-                ExeptionUtils.SetState(Error.E_DB_READING, ErrorsContract.DB_READ);
+                ExceptionUtils.SetState(Error.E_DB_READING, ErrorsContract.DB_READ);
                 throw argEx; 
             }
         }
@@ -108,7 +108,7 @@ namespace InstarmCore.Database
                 catch (Exception ex)
                 {
                     Console.WriteLine(ErrorsContract.DB_READ + ex);
-                    ExeptionUtils.SetState(Error.E_DB_WRITING, ErrorsContract.DB_READ + ex);
+                    ExceptionUtils.SetState(Error.E_DB_WRITING, ErrorsContract.DB_READ + ex);
                     throw ex;
                 }
                 
@@ -164,7 +164,7 @@ namespace InstarmCore.Database
             catch (Exception ex)
             {
                 Console.WriteLine(ErrorsContract.DB_EXECUTE + ex);
-                ExeptionUtils.SetState(Error.E_DB_WRITING, ErrorsContract.DB_EXECUTE + ex);
+                ExceptionUtils.SetState(Error.E_DB_WRITING, ErrorsContract.DB_EXECUTE + ex);
                 throw ex;
             }
 
@@ -188,7 +188,7 @@ namespace InstarmCore.Database
             catch (Exception ex)
             {
                 Console.WriteLine(ErrorsContract.DB_CREATE + ex);
-                ExeptionUtils.SetState(Error.E_DB_CREATING, ErrorsContract.DB_CREATE + ex);
+                ExceptionUtils.SetState(Error.E_DB_CREATING, ErrorsContract.DB_CREATE + ex);
                 throw ex;
             }
           

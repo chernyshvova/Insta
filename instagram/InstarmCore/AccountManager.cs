@@ -268,7 +268,7 @@ namespace InstarmCore
         {
             if (string.IsNullOrEmpty(accountName))
             {
-                ExeptionUtils.SetState(Error.E_DATA_NOT_FOUND, ErrorsContract.ACC_NAME);
+                ExceptionUtils.SetState(Error.E_DATA_NOT_FOUND, ErrorsContract.ACC_NAME);
                 System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_NAME);
                 throw argEx;
             }
@@ -276,13 +276,13 @@ namespace InstarmCore
             profile = dbhelper.GetProfileByName(accountName);
             if (string.IsNullOrEmpty(profile.name))
             {
-                ExeptionUtils.SetState(Error.E_DATA_NOT_FOUND, ErrorsContract.ACC_NAME);
+                ExceptionUtils.SetState(Error.E_DATA_NOT_FOUND, ErrorsContract.ACC_NAME);
                 System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_NAME);
                 throw argEx;
             }
             if (string.IsNullOrEmpty(profile.password))
             {
-                ExeptionUtils.SetState(Error.E_DATA_NOT_FOUND, ErrorsContract.ACC_PASSWORD);
+                ExceptionUtils.SetState(Error.E_DATA_NOT_FOUND, ErrorsContract.ACC_PASSWORD);
                 System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.ACC_PASSWORD);
                 throw argEx;
             }
