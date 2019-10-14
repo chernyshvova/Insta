@@ -142,7 +142,7 @@ IF Not exist "$(SolutionDir)build\bin" (
 mkdir "$(SolutionDir)build\bin"
 )
 
-xcopy "$(SolutionDir)bin\Release"  "$(SolutionDir)build\bin" /E
+
 )ELSE (
 echo 
 )</PostBuildEvent>

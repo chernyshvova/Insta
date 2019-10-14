@@ -24,8 +24,22 @@ namespace InstarmCore.Utils
                 ErrorMessage = "";
             }
         }
+
+
+        public static void Throw(string message)
+        {
+            throw new BaseException(message);
+        }
+        public static void Throw(Error state, string message)
+        {
+            SetState(state, message);
+            throw new BaseException(message);
+        }
+
+
         public static Enum GetState() { return currentState; }
         
+
     }
 
     public enum Error
