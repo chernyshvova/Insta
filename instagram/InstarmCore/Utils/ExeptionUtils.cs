@@ -1,39 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InstarmCore.Utils
 {
     public static class ExeptionUtils
     {
         public static Error currentState = Error.S_OK;
-
-        private static string errMessage = "";
-        public static string ErrorMessage
-        {   get
-            {
-                return errMessage;
-            }
-            set
-            {
-                errMessage = value;
-            }
-        }
+        public static string ErrorMessage { get; set; } = "";
 
         public static void SetState(Error state)
         {
             currentState = state;
+            if (state == Error.S_OK)
+            {
+                ErrorMessage = "";
+            }
         }
         public static void SetState(Error state, string message)
         {
             currentState = state;
             ErrorMessage = message;
+            if (state == Error.S_OK)
+            {
+                ErrorMessage = "";
+            }
+        }
+
+
+        public static void Throw(string message)
+        {
+            throw new BaseException(message);
+        }
+        public static void Throw(Error state, string message)
+        {
+            SetState(state, message);
+            throw new BaseException(message);
         }
 
         public static Enum GetState() { return currentState; }
         
+
     }
 
     public enum Error
