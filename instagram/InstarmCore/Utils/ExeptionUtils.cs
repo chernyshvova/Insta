@@ -31,6 +31,7 @@ namespace InstarmCore.Utils
             currentState = state;
             ErrorMessage = message;
         }
+
         public static Enum GetState() { return currentState; }
         
     }

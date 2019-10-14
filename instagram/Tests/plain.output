@@ -1,0 +1,25 @@
+Feature: Email Agent
+
+  Scenario: Email Agent receives message by empty account
+    Given account with tag empty ... passed in 0.001s
+    When agent receives message with subject testSubject and sender sender ... passed in 0.703s
+    Then agent returns error E_DATA_NOT_FOUND ... failed in 0.000s
+Assertion Failed: expected code STATUS_CODE.E_DATA_NOT_FOUND and result STATUS_CODE.S_OK are not equals
+
+  Scenario: Email Agent receives message by invalid account
+    Given account with tag invalid ... passed in 0.001s
+    When agent receives message with subject testSubject and sender sender ... passed in 1.757s
+    Then agent returns error E_INVALID_EMAIL ... failed in 0.001s
+Assertion Failed: expected code STATUS_CODE.E_INVALID_EMAIL and result STATUS_CODE.S_OK are not equals
+
+  Scenario: Email Agent receives message by invalid mail provider
+    Given account with tag invalid_provider ... passed in 0.000s
+    When agent receives message with subject testSubject and sender chernyshvova@gmail.com ... passed in 0.004s
+    Then agent returns error E_EMAIL_PROVIDER_NOT_FOUND ... passed in 0.000s
+
+  Scenario: Email Agent receives message and parse instagramm challenge
+    Given account with tag gmail ... passed in 0.001s
+    When agent receives message with subject testSubject and sender chernyshvova@gmail.com ... passed in 1.495s
+    Then agent returns error S_OK ... failed in 0.002s
+Assertion Failed: expected code STATUS_CODE.S_OK and result STATUS_CODE.E_EMAIL_PROVIDER_NOT_FOUND are not equals
+

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Dynamic;
 using mail;
+using InstarmCore.Utils;
 
 namespace CommonTools
 {
@@ -15,47 +16,28 @@ namespace CommonTools
             private mail.MailAgent functions;
 
             // ctor
-            public PyWrapper(string login, string password)
+            public PyWrapper()
             {
-
-                try
-                {
-                    functions = new mail.MailAgent(login, password);
-                }
-                catch
-                {
-                    enable = false;
-                    //error handle
-                }
-                
             }
             
-            public int ParseALLMessage(string subject, string sender, out string result)
+            public int ParseALLMessage(string login, string password, string subject, string sender, out string result)
             {
                 result = "";
-                if(!enable)
-                {
-                    return 3;//E_INVALID_EMAIL
-                }
                 try
                 {
-                    DateTime messageTime = new DateTime(2019, 9, 28);
-                    result = functions.ParseMessage(subject, sender, messageTime, new InstagrammVerifyParser());
-                }
-                catch(MailAgent.CustomException ex)
-                {
-                    return ex.m_code;
-                }
-                catch(Exception ex)
-                {
-                string err = ex.ToString();
-                    //something wrong
-                    return 99;
-                }
-            
+                    mail.MailAgent agent = new mail.MailAgent(login, password);
+                    result = functions.ParseMessage(subject, sender, new InstagrammVerifyParser());
+                    
 
-                return 0; // 0 = S_OK
-            }
+                }
+                catch(Exception)
+                {
+                    //...
+                    
+                }
+
+                return Convert.ToInt32(ExeptionUtils.GetState());
+        }
 
         }
 

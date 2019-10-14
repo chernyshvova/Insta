@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using InstarmCore.Utils;
 
 /// <summary>
 /// https://myaccount.google.com/lesssecureapps
@@ -27,12 +28,13 @@ namespace mail
 
         }
 
-        public string ParseMessage(string subj, string sender, DateTime dateFrom, IMessageParser parser)
+        public string ParseMessage(string subj, string sender, IMessageParser parser)
         {
             SearchCondition condition = new SearchCondition();
             if (this.m_host == "gmail.com")
             {
-                condition.Value = string.Format(@"X-GM-RAW ""AFTER:{0:yyyy-MM-dd}""", dateFrom);
+                DateTime messageTime = new DateTime(2000, 9, 28);
+                condition.Value = string.Format(@"X-GM-RAW ""AFTER:{0:yyyy-MM-dd}""", messageTime);
             }
             else
             {
@@ -56,8 +58,10 @@ namespace mail
 
             if(resultMessages.Count == 0)
             {
-                throw new CommonTools.MailAgent.CustomException(1);//E_DATA_NOT_FOUND
+                ExeptionUtils.SetState(Error.E_DATA_NOT_FOUND);
+                return "";
             }
+
 
             return parser.Parse(resultMessages[resultMessages.Count].Value.Body);
             
@@ -74,7 +78,9 @@ namespace mail
                     this.SetParsedData(993, true, "imap.seznam.cz");
                     break;
                 default:
-                    throw new CommonTools.MailAgent.CustomException(2); //2 = MAIL_PROVIDER_NOT_FOUND
+                    ExeptionUtils.SetState(Error.E_EMAIL_PROVIDER_NOT_FOUND);
+                    System.ArgumentException argEx = new System.ArgumentException("Ошиба блабла бла");
+                    throw argEx;
             }
         }
 

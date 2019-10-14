@@ -63,7 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Export.cs" />
-    <Compile Include="MailAgent\CustomException.cs" />
     <Compile Include="MailAgent\IMessageParser.cs" />
     <Compile Include="MailAgent\InstagrammVerifyParser.cs" />
     <Compile Include="MailAgent\MailAgent.cs" />
@@ -71,6 +70,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InstarmCore\InstarmCore.csproj">
+      <Project>{e431625b-a1aa-418b-be71-a640cfe2fbb0}</Project>
+      <Name>InstarmCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
