@@ -9,6 +9,11 @@ namespace InstarmConsole
     {
         static void Main(string[] args)
         {
+            CommonTools.PyWrapper test = new CommonTools.PyWrapper();
+            string res;
+            test.ParseALLMessage("invalid@gmail.com", "invalid", "testSubject", "sender", out res);
+
+
             if (args.Length == 0)
             {
                 Init();

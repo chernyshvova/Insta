@@ -4,7 +4,7 @@ namespace InstarmCore.Utils
 {
     public static class ExeptionUtils
     {
-        public static Error currentState = Error.S_OK;
+        public static Error currentState = Error.DEFAULT;
         public static string ErrorMessage { get; set; } = "";
 
         public static void SetState(Error state)
@@ -25,6 +25,10 @@ namespace InstarmCore.Utils
             }
         }
 
+        public static int GetCode()
+        {
+            return Convert.ToInt32(ExeptionUtils.GetState());
+        }
 
         public static void Throw(string message)
         {

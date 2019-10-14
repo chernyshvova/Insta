@@ -12,8 +12,7 @@ namespace CommonTools
         public class PyWrapper : DynamicObject
         {
             public bool enable = true;
-            // wrapped C# class
-            private mail.MailAgent functions;
+
 
             // ctor
             public PyWrapper()
@@ -26,9 +25,7 @@ namespace CommonTools
                 try
                 {
                     mail.MailAgent agent = new mail.MailAgent(login, password);
-                    result = functions.ParseMessage(subject, sender, new InstagrammVerifyParser());
-                    
-
+                    result = agent.ParseMessage(subject, sender, new InstagrammVerifyParser());
                 }
                 catch(Exception)
                 {

@@ -16,6 +16,11 @@ namespace mail
         Eng
     }
 
+    enum EMAIL_HRESULT
+    {
+        INVALID_CREDENTIALS	 = -2146233088
+    }
+
     class MailAgent
     {
         public MailAgent(string login, string password)
@@ -24,8 +29,18 @@ namespace mail
             const int hostIndex = 1;
             string serverName = login.Split('@')[hostIndex];
             ResolvePort(serverName);
-            m_client = new AE.Net.Mail.ImapClient(m_host, login, password, AE.Net.Mail.AuthMethods.Login, m_port, m_ssl, true);
-
+            try
+            {
+                m_client = new AE.Net.Mail.ImapClient(m_host, login, password, AE.Net.Mail.AuthMethods.Login, m_port, m_ssl, true);
+            }
+            catch (Exception ex)
+            {
+                if(ex.HResult == EMAIL_HRESULT.INVALID_CREDENTIALS)
+                {
+                    ExeptionUtils.SetState(Error.E_INVALID_EMAIL, ex.Message);
+                }
+                
+            }
         }
 
         public string ParseMessage(string subj, string sender, IMessageParser parser)
@@ -78,9 +93,8 @@ namespace mail
                     this.SetParsedData(993, true, "imap.seznam.cz");
                     break;
                 default:
-                    ExeptionUtils.SetState(Error.E_EMAIL_PROVIDER_NOT_FOUND);
-                    System.ArgumentException argEx = new System.ArgumentException("Ошиба блабла бла");
-                    throw argEx;
+                    ExeptionUtils.Throw(Error.E_EMAIL_PROVIDER_NOT_FOUND, "this email server is not unsupported");
+                    break;
             }
         }
 
