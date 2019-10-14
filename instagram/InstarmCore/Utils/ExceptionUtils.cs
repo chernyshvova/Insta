@@ -4,7 +4,7 @@ namespace InstarmCore.Utils
 {
     public static class ExeptionUtils
     {
-        public static Error currentState = Error.DEFAULT;
+        public static Error currentState = Error.UNKNOWN;
         public static string ErrorMessage { get; set; } = "";
 
         public static void SetState(Error state)
@@ -47,6 +47,7 @@ namespace InstarmCore.Utils
 
     public enum Error
     {
+    UNKNOWN = 998,
     DEFAULT = 999,
     S_OK = 0,
     E_DATA_NOT_FOUND = 1,
