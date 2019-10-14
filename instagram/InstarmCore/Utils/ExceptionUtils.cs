@@ -2,7 +2,7 @@
 
 namespace InstarmCore.Utils
 {
-    public static class ExeptionUtils
+    public static class ExceptionUtils
     {
         public static Error currentState = Error.UNKNOWN;
         public static string ErrorMessage { get; set; } = "";
@@ -27,7 +27,7 @@ namespace InstarmCore.Utils
 
         public static int GetCode()
         {
-            return Convert.ToInt32(ExeptionUtils.GetState());
+            return Convert.ToInt32(ExceptionUtils.GetState());
         }
 
         public static void Throw(string message)

@@ -37,8 +37,8 @@ namespace InstarmConsole
             }
             catch (Exception ex)
             {
-                var state = InstarmCore.Utils.ExeptionUtils.GetState();
-                string err = InstarmCore.Utils.ExeptionUtils.ErrorMessage;
+                var state = InstarmCore.Utils.ExceptionUtils.GetState();
+                string err = InstarmCore.Utils.ExceptionUtils.ErrorMessage;
                 Console.WriteLine("Error!:  " + ex);
             }
         }

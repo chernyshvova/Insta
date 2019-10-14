@@ -35,9 +35,9 @@ namespace mail
             }
             catch (Exception ex)
             {
-                if(ex.HResult == EMAIL_HRESULT.INVALID_CREDENTIALS)
+                if(ex.HResult == (int)EMAIL_HRESULT.INVALID_CREDENTIALS)
                 {
-                    ExeptionUtils.SetState(Error.E_INVALID_EMAIL, ex.Message);
+                    ExceptionUtils.SetState(Error.E_INVALID_EMAIL, ex.Message);
                 }
                 
             }
@@ -73,7 +73,7 @@ namespace mail
 
             if(resultMessages.Count == 0)
             {
-                ExeptionUtils.SetState(Error.E_DATA_NOT_FOUND);
+                ExceptionUtils.SetState(Error.E_DATA_NOT_FOUND);
                 return "";
             }
 
@@ -93,7 +93,7 @@ namespace mail
                     this.SetParsedData(993, true, "imap.seznam.cz");
                     break;
                 default:
-                    ExeptionUtils.Throw(Error.E_EMAIL_PROVIDER_NOT_FOUND, "this email server is not unsupported");
+                    ExceptionUtils.Throw(Error.E_EMAIL_PROVIDER_NOT_FOUND, "this email server is not unsupported");
                     break;
             }
         }

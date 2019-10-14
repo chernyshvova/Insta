@@ -33,7 +33,7 @@ namespace CommonTools
                     
                 }
 
-                return Convert.ToInt32(ExeptionUtils.GetState());
+                return Convert.ToInt32(ExceptionUtils.GetState());
         }
 
         }

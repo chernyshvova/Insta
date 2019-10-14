@@ -90,7 +90,7 @@
     <Compile Include="ProxyHandler.cs" />
     <Compile Include="Utils\BaseException.cs" />
     <Compile Include="Utils\ErrorsContract.cs" />
-    <Compile Include="Utils\ExeptionUtils.cs" />
+    <Compile Include="Utils\ExceptionUtils.cs" />
     <Compile Include="Utils\PythonWrapper.cs" />
   </ItemGroup>
   <ItemGroup>

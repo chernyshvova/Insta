@@ -17,20 +17,20 @@ namespace InstarmCore.Utils
             }
             catch (Exception)
             {
-                result = ExeptionUtils.ErrorMessage;
-                return (int)ExeptionUtils.currentState;
+                result = ExceptionUtils.ErrorMessage;
+                return (int)ExceptionUtils.currentState;
             }
            
-            result = ExeptionUtils.ErrorMessage;
-            return (int)ExeptionUtils.currentState;
+            result = ExceptionUtils.ErrorMessage;
+            return (int)ExceptionUtils.currentState;
         }
 
         public int SetPost(string accountName, string path, string message, out string result)
         {
             result = "";
             var taskResult = _SetPost(accountName, path, message);
-            result = ExeptionUtils.ErrorMessage;
-            return (int)ExeptionUtils.currentState;
+            result = ExceptionUtils.ErrorMessage;
+            return (int)ExceptionUtils.currentState;
         }
         private async Task _SetPost(string name, string path, string message)
         {
@@ -42,8 +42,8 @@ namespace InstarmCore.Utils
             result = "";
 
             var taskResult = _LikeMedia(accountName, medioaUrl);
-            result = ExeptionUtils.ErrorMessage;
-            return (int)ExeptionUtils.currentState;
+            result = ExceptionUtils.ErrorMessage;
+            return (int)ExceptionUtils.currentState;
         }
         private async Task _LikeMedia(string accountName, string medioaUrl)
         {
@@ -57,8 +57,8 @@ namespace InstarmCore.Utils
 
             result = "";
             var taskResult = _FollowUser(accountName, username);
-            result = ExeptionUtils.ErrorMessage;
-            return (int)ExeptionUtils.currentState;
+            result = ExceptionUtils.ErrorMessage;
+            return (int)ExceptionUtils.currentState;
         }
         private async Task _FollowUser(string accountName, string username)
         {
@@ -69,8 +69,8 @@ namespace InstarmCore.Utils
         {
             result = "";
             var taskResult = _UnFollowUser(accountName, username);
-            result = ExeptionUtils.ErrorMessage;
-            return (int)ExeptionUtils.currentState;
+            result = ExceptionUtils.ErrorMessage;
+            return (int)ExceptionUtils.currentState;
         }
         private async Task _UnFollowUser(string accountName, string username)
         {
@@ -82,8 +82,8 @@ namespace InstarmCore.Utils
             result = "";
             var taskResult = _DirectCheck(accountName);
 
-            result = ExeptionUtils.ErrorMessage;
-            return (int)ExeptionUtils.currentState;
+            result = ExceptionUtils.ErrorMessage;
+            return (int)ExceptionUtils.currentState;
         }
         private async Task _DirectCheck(string accountName)
         {
@@ -95,8 +95,8 @@ namespace InstarmCore.Utils
             result = "";
             var taskResult = _DirectSend(accountName, targetAccountName, message);
 
-            result = ExeptionUtils.ErrorMessage;
-            return (int)ExeptionUtils.currentState;
+            result = ExceptionUtils.ErrorMessage;
+            return (int)ExceptionUtils.currentState;
         }
         private async Task _DirectSend(string accountName, string targetAccountName, string message)
         {
@@ -108,8 +108,8 @@ namespace InstarmCore.Utils
             result = "";
             var taskResult = _CommentMedia(accountName, mediaUrl, message);
 
-            result = ExeptionUtils.ErrorMessage;
-            return (int)ExeptionUtils.currentState;
+            result = ExceptionUtils.ErrorMessage;
+            return (int)ExceptionUtils.currentState;
         }
         private async Task _CommentMedia(string accountName, string mediaUlr, string message)
         {
@@ -123,8 +123,8 @@ namespace InstarmCore.Utils
             result = "";
             var taskResult = _SetAvatar(accountName, imgName);
 
-            result = ExeptionUtils.ErrorMessage;
-            return (int)ExeptionUtils.currentState;
+            result = ExceptionUtils.ErrorMessage;
+            return (int)ExceptionUtils.currentState;
         }
         private async Task _SetAvatar(string accountName, string imgName)
         {
