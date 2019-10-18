@@ -1,0 +1,23 @@
+<testsuite errors="0" failures="0" hostname="DESKTOP-R2M1K0M" name="feature.manager.Testing account API" skipped="0" tests="2" time="0.084949" timestamp="2019-10-18T19:42:26.007040"><testcase classname="feature.manager.Testing account API" name="Sign in" status="passed" time="0.037978"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: Sign in
+    Given account with tag i_valid_account ... passed in 0.001s
+    When account trying to singin ... passed in 0.036s
+    Then account returns error UNKNOWN ... passed in 0.001s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="feature.manager.Testing account API" name="Like post" status="passed" time="0.046971"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: Like post
+    Given account with tag i_valid_account ... passed in 0.002s
+    When account trying to like post ... passed in 0.043s
+    Then account returns error UNKNOWN ... passed in 0.002s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

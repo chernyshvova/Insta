@@ -7,6 +7,12 @@ namespace InstarmCore.Utils
         public static Error currentState = Error.UNKNOWN;
         public static string ErrorMessage { get; set; } = "";
 
+        public static void SetDefault()
+        {
+            ErrorMessage = "";
+            currentState = Error.UNKNOWN;
+        }
+
         public static void SetState(Error state)
         {
             currentState = state;

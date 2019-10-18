@@ -1,48 +1,48 @@
-<testsuite errors="0" failures="1" hostname="DESKTOP-8OA7PF0" name="feature.email_parser.Email Agent" skipped="0" tests="4" time="5.708411" timestamp="2019-10-14T17:11:13.194833"><testcase classname="feature.email_parser.Email Agent" name="Email Agent receives message by empty account" status="passed" time="1.248991"><system-out>
+<testsuite errors="0" failures="1" hostname="DESKTOP-R2M1K0M" name="feature.email_parser.Email Agent" skipped="0" tests="4" time="4.81014" timestamp="2019-10-18T19:42:25.900104"><testcase classname="feature.email_parser.Email Agent" name="Email Agent receives message by empty account" status="passed" time="1.243469"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario: Email Agent receives message by empty account
     Given account with tag empty ... passed in 0.001s
-    When agent receives message with subject testSubject and sender sender ... passed in 1.247s
+    When agent receives message with subject testSubject and sender sender ... passed in 1.241s
     Then agent returns error E_DATA_NOT_FOUND ... passed in 0.001s
 
 @scenario.end
 --------------------------------------------------------------------------------
 ]]>
-</system-out></testcase><testcase classname="feature.email_parser.Email Agent" name="Email Agent receives message by invalid account" status="passed" time="2.062905"><system-out>
+</system-out></testcase><testcase classname="feature.email_parser.Email Agent" name="Email Agent receives message by invalid account" status="passed" time="1.759858"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario: Email Agent receives message by invalid account
-    Given account with tag invalid ... passed in 0.002s
-    When agent receives message with subject testSubject and sender sender ... passed in 2.061s
+    Given account with tag invalid ... passed in 0.001s
+    When agent receives message with subject testSubject and sender sender ... passed in 1.759s
     Then agent returns error E_INVALID_EMAIL ... passed in 0.000s
 
 @scenario.end
 --------------------------------------------------------------------------------
 ]]>
-</system-out></testcase><testcase classname="feature.email_parser.Email Agent" name="Email Agent receives message by invalid mail provider" status="passed" time="0.004987"><system-out>
+</system-out></testcase><testcase classname="feature.email_parser.Email Agent" name="Email Agent receives message by invalid mail provider" status="passed" time="0.013994"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario: Email Agent receives message by invalid mail provider
-    Given account with tag invalid_provider ... passed in 0.000s
-    When agent receives message with subject testSubject and sender chernyshvova@gmail.com ... passed in 0.004s
+    Given account with tag invalid_provider ... passed in 0.001s
+    When agent receives message with subject testSubject and sender chernyshvova@gmail.com ... passed in 0.012s
     Then agent returns error E_EMAIL_PROVIDER_NOT_FOUND ... passed in 0.001s
 
 @scenario.end
 --------------------------------------------------------------------------------
 ]]>
-</system-out></testcase><testcase classname="feature.email_parser.Email Agent" name="Email Agent receives message and parse instagramm challenge" status="failed" time="2.391528"><failure message="expected code STATUS_CODE.S_OK and result STATUS_CODE.E_DATA_NOT_FOUND are not equals" type="AssertionError">
+</system-out></testcase><testcase classname="feature.email_parser.Email Agent" name="Email Agent receives message and parse instagramm challenge" status="failed" time="1.79282"><failure message="expected code STATUS_CODE.S_OK and result STATUS_CODE.E_INVALID_EMAIL are not equals" type="AssertionError">
 <![CDATA[
-Failing step: Then agent returns error S_OK ... failed in 0.000s
+Failing step: Then agent returns error S_OK ... failed in 0.001s
 Location: feature/email_parser.feature:21
-Assertion Failed: expected code STATUS_CODE.S_OK and result STATUS_CODE.E_DATA_NOT_FOUND are not equals]]>
+Assertion Failed: expected code STATUS_CODE.S_OK and result STATUS_CODE.E_INVALID_EMAIL are not equals]]>
 </failure><system-out>
 <![CDATA[
 @scenario.begin
   Scenario: Email Agent receives message and parse instagramm challenge
-    Given account with tag gmail ... passed in 0.000s
-    When agent receives message with subject testSubject and sender chernyshvova@gmail.com ... passed in 2.392s
-    Then agent returns error S_OK ... failed in 0.000s
+    Given account with tag gmail ... passed in 0.001s
+    When agent receives message with subject testSubject and sender chernyshvova@gmail.com ... passed in 1.791s
+    Then agent returns error S_OK ... failed in 0.001s
 
 @scenario.end
 --------------------------------------------------------------------------------

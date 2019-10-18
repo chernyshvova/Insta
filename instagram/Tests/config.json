@@ -19,7 +19,22 @@
         "login": "chernyshvova@XXXXX.com",
         "password": "",
         "tag" : "invalid_provider"
+    },  
+    {
+        "login": "Vasyamba",
+        "password": "",
+        "tag" : "i_not_existing_invalid"
+    },
+    {
+        "login": "Vasua",
+        "password": "",
+        "tag" : "i_existing_invalid"
+    },
+    {
+        "login": "Vasua",
+        "password": "Fr",
+        "tag" : "i_valid_account"
     }
-    
+
 ]
 }

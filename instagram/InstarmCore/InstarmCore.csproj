@@ -108,7 +108,7 @@
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
 
-copy "$(SolutionDir)\bin\release\InstarmCore.dll" "$(SolutionDir)Tests\artifacts\InstarmCore.dll"
+copy "$(SolutionDir)bin\Release\InstarmCore.dll" "$(SolutionDir)Tests\artifacts\InstarmCore.dll"
 )ELSE (
 echo 
 )</PostBuildEvent>

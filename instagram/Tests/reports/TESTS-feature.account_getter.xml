@@ -1,0 +1,23 @@
+<testsuite errors="0" failures="0" hostname="DESKTOP-R2M1K0M" name="feature.account_getter.Getting account from database" skipped="0" tests="2" time="0.688086" timestamp="2019-10-18T19:42:21.069984"><testcase classname="feature.account_getter.Getting account from database" name="Agent trying get NOT existing account" status="passed" time="0.547172"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: Agent trying get NOT existing account
+    Given account with tag i_not_existing_invalid ... passed in 0.001s
+    When account recive accountname ... passed in 0.545s
+    Then account returns error E_DB_DATA_NOT_FOUND ... passed in 0.001s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="feature.account_getter.Getting account from database" name="Agent trying get existing but invalid account" status="passed" time="0.140914"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: Agent trying get existing but invalid account
+    Given account with tag i_existing_invalid ... passed in 0.001s
+    When account recive accountname ... passed in 0.140s
+    Then account returns error UNKNOWN ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

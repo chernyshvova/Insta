@@ -45,9 +45,8 @@ namespace InstarmCore.Database
             var data = DoTask(DbContract.SELECTPROFILE + " where " + DbContract.TAG + "='" + tag + "';");
             if (!data.HasRows)
             {
-                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.DB_FIND);
-                ExceptionUtils.SetState(Error.E_DB_DATA_NOT_FOUND, ErrorsContract.DB_FIND);
-                throw argEx;
+                Close();
+                ExceptionUtils.Throw(Error.E_DB_DATA_NOT_FOUND, ErrorsContract.DB_FIND);
             }
             while (data.Read())
             {
@@ -60,30 +59,40 @@ namespace InstarmCore.Database
         }
         public Profile GetProfileByName(string name)
         {
-            Connect();
-            Profile profile = new Profile();
-            var data = DoTask(DbContract.SELECTPROFILE + " where " + DbContract.USERNAME + "='" + name + "';");
-            if (!data.HasRows)
+            try
             {
-                Console.WriteLine(ErrorsContract.DB_FIND);
-                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.DB_FIND);
-                ExceptionUtils.SetState(Error.E_DB_DATA_NOT_FOUND, ErrorsContract.DB_FIND);
-                throw argEx;
+                Connect();
+                Profile profile = new Profile();
+                var data = DoTask(DbContract.SELECTPROFILE + " where " + DbContract.USERNAME + "='" + name + "';");
+                if (!data.HasRows)
+                {
+                    Console.WriteLine(ErrorsContract.DB_FIND);
+                    ExceptionUtils.Throw(Error.E_DB_DATA_NOT_FOUND, ErrorsContract.DB_FIND);
+                    System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.DB_READ);
+                    ExceptionUtils.SetState(Error.E_DB_READING, ErrorsContract.DB_READ);
+                    throw argEx;
+                }
+                if (data.Read())
+                {
+                    profile = DbDataReader(data);
+                    Close();
+                    return profile;
+                }
+                else
+                {
+                    Console.WriteLine(ErrorsContract.DB_READ);
+                    System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.DB_READ);
+                    ExceptionUtils.SetState(Error.E_DB_READING, ErrorsContract.DB_READ);
+                    throw argEx;
+                }
             }
-            if (data.Read())
+            catch (Exception)
             {
-                profile = DbDataReader(data);
                 Close();
-                return profile;
+                ExceptionUtils.Throw(Error.E_DB_DATA_NOT_FOUND, ErrorsContract.DB_FIND);
+                throw;
             }
-            else
-            {
-                Console.WriteLine(ErrorsContract.DB_READ);
-                Close();
-                System.ArgumentException argEx = new System.ArgumentException(ErrorsContract.DB_READ);
-                ExceptionUtils.SetState(Error.E_DB_READING, ErrorsContract.DB_READ);
-                throw argEx; 
-            }
+
         }
 
         public void writeMessages(List<Message> data)
@@ -107,6 +116,7 @@ namespace InstarmCore.Database
                 }
                 catch (Exception ex)
                 {
+                    Close();
                     Console.WriteLine(ErrorsContract.DB_READ + ex);
                     ExceptionUtils.SetState(Error.E_DB_WRITING, ErrorsContract.DB_READ + ex);
                     throw ex;
@@ -163,6 +173,7 @@ namespace InstarmCore.Database
             }
             catch (Exception ex)
             {
+                Close();
                 Console.WriteLine(ErrorsContract.DB_EXECUTE + ex);
                 ExceptionUtils.SetState(Error.E_DB_WRITING, ErrorsContract.DB_EXECUTE + ex);
                 throw ex;
@@ -188,6 +199,7 @@ namespace InstarmCore.Database
             catch (Exception ex)
             {
                 Console.WriteLine(ErrorsContract.DB_CREATE + ex);
+                Close();
                 ExceptionUtils.SetState(Error.E_DB_CREATING, ErrorsContract.DB_CREATE + ex);
                 throw ex;
             }

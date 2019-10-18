@@ -3,16 +3,22 @@ using System.IO;
 using System.Threading.Tasks;
 using InstarmCore;
 using InstarmCore.Database;
+using InstarmCore.Utils;
+
 namespace InstarmConsole
 {
     class Program
     {
         static void Main(string[] args)
-        {
+        {/*
             CommonTools.PyWrapper test = new CommonTools.PyWrapper();
             string res;
-            test.ParseALLMessage("invalid@gmail.com", "invalid", "testSubject", "sender", out res);
+            test.("invalid@gmail.com", "invalid", "testSubject", "sender", out res);
 
+            */
+            PythonWrapper wrapper = new PythonWrapper();
+            string res;
+            wrapper.SingIn("Vasua", out res);
 
             if (args.Length == 0)
             {

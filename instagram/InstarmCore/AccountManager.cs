@@ -93,6 +93,20 @@ namespace InstarmCore
                
             }
         }
+
+        public async Task SignIn(string accountName)
+        {
+            try
+            {
+                Account account = getAccount(accountName);
+                await account.SignIn();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
         public async Task LikeMediaSingle(string accountName, string mediaUrl)
         {
             try
